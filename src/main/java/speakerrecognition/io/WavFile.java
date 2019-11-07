@@ -1,5 +1,7 @@
-package speakerrecognition.impl;
+package speakerrecognition.io;
 
+
+import speakerrecognition.impl.MyException;
 
 import java.io.IOException;
 import java.io.RandomAccessFile;

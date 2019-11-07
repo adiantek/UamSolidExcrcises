@@ -7,12 +7,7 @@ import java.util.List;
 import org.junit.Test;
 
 import speakerrecognition.SpeakerRecognition;
-import speakerrecognition.impl.GMM;
-import speakerrecognition.impl.MFCC;
-import speakerrecognition.impl.MyException;
-import speakerrecognition.impl.SpeakerRecognitionImpl;
-import speakerrecognition.impl.Speaker_model;
-import speakerrecognition.impl.WavFile;
+import speakerrecognition.io.WavFile;
 
 
 public class TestClass {
