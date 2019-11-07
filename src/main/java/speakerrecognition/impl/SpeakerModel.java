@@ -5,7 +5,7 @@ import speakerrecognition.math.Statistics;
 
 import java.io.Serializable;
 
-public class Speaker_model implements Serializable {
+public class SpeakerModel implements Serializable {
     /**
      *
      */
@@ -15,7 +15,7 @@ public class Speaker_model implements Serializable {
     private double[] weights = null;
     private String name = null;
 
-    public Speaker_model(double[][] means, double[][] covars, double[] weights, String name) {
+    public SpeakerModel(double[][] means, double[][] covars, double[] weights, String name) {
         this.means = means;
         this.covars = covars;
         this.weights = weights;

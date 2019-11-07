@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.List;
 
 import speakerrecognition.impl.MyException;
-import speakerrecognition.impl.Speaker_model;
+import speakerrecognition.impl.SpeakerModel;
 
 public interface SpeakerRecognition {
 
@@ -16,13 +16,13 @@ public interface SpeakerRecognition {
 
     double[][] getMeansOfClustersFor2DdataByKMeans(double[][] data, int numOfClusters);
 
-    double getLogProbabilityOfDataUnderModel(Speaker_model model, double[][] dataToBeTested) throws MyException;
+    double getLogProbabilityOfDataUnderModel(SpeakerModel model, double[][] dataToBeTested) throws MyException;
 
     double[][] computeMFCC(int[] soundSamples, int fs);
 
-    String recognize(List<Speaker_model> speakerModels, String resourceSoundSpeechFilePath) throws IOException, MyException;
+    String recognize(List<SpeakerModel> speakerModels, String resourceSoundSpeechFilePath) throws IOException, MyException;
 
-    void printLogProbsForRecognition(List<Speaker_model> speakerModels, String resourceSoundSpeechFilePath) throws IOException, MyException;
+    void printLogProbsForRecognition(List<SpeakerModel> speakerModels, String resourceSoundSpeechFilePath) throws IOException, MyException;
 
 
 }

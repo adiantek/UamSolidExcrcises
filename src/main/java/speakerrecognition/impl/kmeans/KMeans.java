@@ -39,7 +39,7 @@ public class KMeans {
         int n_init = 10;
         for (int i = 0; i < n_init; i++) {
             int max_iter = 300;
-            Kmeans_single kmeans_single = new Kmeans_single(this.data, this.numOfClusters, x_squared_norms, max_iter, this.tol, numOfRows, numOfCols);
+            KmeansSingle kmeans_single = new KmeansSingle(this.data, this.numOfClusters, x_squared_norms, max_iter, this.tol, numOfRows, numOfCols);
             cluster_centers = kmeans_single.get_best_centers().clone();
             inertia = kmeans_single.get_best_inertia();
             if (inertia < this.best_inertia) {

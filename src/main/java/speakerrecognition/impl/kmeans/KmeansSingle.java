@@ -2,12 +2,12 @@ package speakerrecognition.impl.kmeans;
 
 import speakerrecognition.math.Matrices;
 
-public class Kmeans_single {
+public class KmeansSingle {
     private int[] best_labels = null;
     private double[][] best_centers = null;
     private double best_inertia = Double.MAX_VALUE;
 
-    Kmeans_single(double[][] data, int n_clusters, double[] x_sq_norms, int max_iter, double tol, int numOfRows, int numOfCols) {
+    KmeansSingle(double[][] data, int n_clusters, double[] x_sq_norms, int max_iter, double tol, int numOfRows, int numOfCols) {
         double[][] centers = KMeans.init_centroids(data, n_clusters, x_sq_norms, numOfRows, numOfCols);
         double[] distances = new double[data.length];
 

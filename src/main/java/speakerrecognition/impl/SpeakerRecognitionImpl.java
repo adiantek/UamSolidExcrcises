@@ -34,7 +34,7 @@ public class SpeakerRecognitionImpl implements SpeakerRecognition {
         return kMeans.get_centers();
     }
 
-    public double getLogProbabilityOfDataUnderModel(Speaker_model model, double[][] dataToBeTested) throws MyException {
+    public double getLogProbabilityOfDataUnderModel(SpeakerModel model, double[][] dataToBeTested) throws MyException {
         return model.getScore(dataToBeTested);
     }
 
@@ -44,10 +44,10 @@ public class SpeakerRecognitionImpl implements SpeakerRecognition {
         return speaker_mfcc;
     }
 
-    public String recognize(List<Speaker_model> speakerModels, String resourceSoundSpeechFilePath) throws IOException, MyException {
+    public String recognize(List<SpeakerModel> speakerModels, String resourceSoundSpeechFilePath) throws IOException, MyException {
         double finalScore = Long.MIN_VALUE;
         String bestFittingModelName = "";
-        for (Speaker_model model : speakerModels) {
+        for (SpeakerModel model : speakerModels) {
             WavFile wavFile1 = new WavFile(resourceSoundSpeechFilePath);
             wavFile1.open();
             int[] x3 = wavFile1.getSamples();
@@ -64,9 +64,9 @@ public class SpeakerRecognitionImpl implements SpeakerRecognition {
         return "Test speech from file " + resourceSoundSpeechFilePath + " is most similar to model " + bestFittingModelName;
     }
 
-    public void printLogProbsForRecognition(List<Speaker_model> speakerModels, String resourceSoundSpeechFilePath)
+    public void printLogProbsForRecognition(List<SpeakerModel> speakerModels, String resourceSoundSpeechFilePath)
             throws IOException, MyException {
-        for (Speaker_model model : speakerModels) {
+        for (SpeakerModel model : speakerModels) {
             WavFile wavFile1 = new WavFile(resourceSoundSpeechFilePath);
             wavFile1.open();
             int[] x3 = wavFile1.getSamples();
