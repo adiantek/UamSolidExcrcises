@@ -1,4 +1,4 @@
-package speakerrecognition.impl;
+package speakerrecognition.impl.gmm;
 
 
 // https://commons.apache.org/proper/commons-math/apidocs/org/apache/commons/math3/distribution/fitting/MultivariateNormalMixtureExpectationMaximization.html
@@ -61,12 +61,9 @@ public class GMM {
                     change = Math.abs(current_log_likelihood - prev_log_likelihood);
                     double tol = 0.001;
                     if (change < tol) {
-                        boolean converged = true;
                         break;
                     }
-
                 }
-
                 /// do m-step - gmm.py line 509
                 do_mstep(this.observations, responsibilities);
 

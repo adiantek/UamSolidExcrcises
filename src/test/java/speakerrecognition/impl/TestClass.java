@@ -7,6 +7,7 @@ import java.util.List;
 import org.junit.Test;
 
 import speakerrecognition.SpeakerRecognition;
+import speakerrecognition.impl.gmm.GMM;
 import speakerrecognition.io.WavFile;
 
 
