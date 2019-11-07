@@ -1,7 +1,7 @@
 package speakerrecognition.impl;
 
 
-import speakerrecognition.math.Matrixes;
+import speakerrecognition.math.Matrices;
 import speakerrecognition.math.Statistics;
 
 import java.util.Arrays;
@@ -30,7 +30,7 @@ public class KMeans {
         this.tol = tolerance(x, tol);
         this.numOfRows = x.length;
         this.numOfCols = x[0].length;
-        this.data = Matrixes.copy2dArray(x);
+        this.data = Matrices.copy2dArray(x);
         this.best_cluster_centers = new double[numOfClust][x[0].length];
         this.best_labels = new int[x.length];
 
@@ -56,7 +56,7 @@ public class KMeans {
 
 
             ////////// numpy einsum //////////////
-            double[] x_squared_norms = Matrixes.einsum(data);
+            double[] x_squared_norms = Matrices.einsum(data);
 
             int n_init = 10;
             for (int i = 0; i < n_init; i++) {
@@ -75,7 +75,7 @@ public class KMeans {
 
             }
 
-            this.best_cluster_centers = Matrixes.addValue(this.best_cluster_centers, X_mean);
+            this.best_cluster_centers = Matrices.addValue(this.best_cluster_centers, X_mean);
         } catch (Exception myEx) {
             //System.out.println("An exception encourred: " + myEx.getMessage());
             myEx.printStackTrace();
@@ -123,14 +123,14 @@ public class KMeans {
             /*!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
             int center_id = (int) Math.floor(Math.random() * this.numOfRows);
             if (this.numOfCols >= 0) System.arraycopy(data[center_id], 0, centers[0], 0, this.numOfCols);
-            double[] closest_dist_sq = Matrixes.euclidean_distances(centers[0], data, x_sq_norms);
-            double current_pot = Matrixes.sum(closest_dist_sq);
+            double[] closest_dist_sq = Matrices.euclidean_distances(centers[0], data, x_sq_norms);
+            double current_pot = Matrices.sum(closest_dist_sq);
 
             for (int c = 1; c < n_clusters; c++) {
                 /*!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
-                double[] rand_vals = Matrixes.genRandMatrix(current_pot, n_local_trials);
-                double[] closest_dist_sq_cumsum = Matrixes.cumsum(closest_dist_sq);
-                int[] candidate_ids = Matrixes.searchsorted(closest_dist_sq_cumsum, rand_vals);
+                double[] rand_vals = Matrices.genRandMatrix(current_pot, n_local_trials);
+                double[] closest_dist_sq_cumsum = Matrices.cumsum(closest_dist_sq);
+                int[] candidate_ids = Matrices.searchsorted(closest_dist_sq_cumsum, rand_vals);
                 double[][] data_candidates = new double[n_local_trials][this.numOfCols];
 
                 for (int z = 0; z < n_local_trials; z++) {
@@ -142,11 +142,11 @@ public class KMeans {
                 double best_pot = 99999999;
                 double[] best_dist_sq = null;
 
-                double[][] distance_to_candidates = Matrixes.euclidean_distances(data_candidates, data, x_sq_norms);
+                double[][] distance_to_candidates = Matrices.euclidean_distances(data_candidates, data, x_sq_norms);
 
                 for (int trial = 0; trial < n_local_trials; trial++) {
-                    double[] new_dist_sq = Matrixes.minimum(closest_dist_sq, Matrixes.select_row(distance_to_candidates, trial));
-                    double new_pot = Matrixes.sum(new_dist_sq);
+                    double[] new_dist_sq = Matrices.minimum(closest_dist_sq, Matrices.select_row(distance_to_candidates, trial));
+                    double new_pot = Matrices.sum(new_dist_sq);
 
                     if (best_candidate == -1 | new_pot < best_pot) {
                         best_candidate = candidate_ids[trial];
@@ -214,7 +214,7 @@ public class KMeans {
                         this.best_inertia = inertia;
                     }
 
-                    if (Matrixes.squared_norm(Matrixes.substractMatrixes(centers_old, centers)) <= tol)
+                    if (Matrices.squared_norm(Matrices.substractMatrixes(centers_old, centers)) <= tol)
                         break;
 
                 }
@@ -260,7 +260,7 @@ public class KMeans {
 
             int n_samples = X.length;
             int[] labels = new int[n_samples];
-            labels = Matrixes.addValue(labels, -1);
+            labels = Matrices.addValue(labels, -1);
 
             LabelsPrecomputeDence result = new LabelsPrecomputeDence(X, x_squared_norms, centers, this.distances);
             this.labels = result.labels.clone();
@@ -279,11 +279,11 @@ public class KMeans {
 
                 int n_samples = X.length;
                 int k = centers.length;
-                double[][] all_distances = Matrixes.euclidean_distances(centers, X, x_squared_norms);
+                double[][] all_distances = Matrices.euclidean_distances(centers, X, x_squared_norms);
                 this.labels = new int[n_samples];
-                this.labels = Matrixes.addValue(this.labels, -1);
+                this.labels = Matrices.addValue(this.labels, -1);
                 double[] mindist = new double[n_samples];
-                mindist = Matrixes.addValue(mindist, Double.POSITIVE_INFINITY);
+                mindist = Matrices.addValue(mindist, Double.POSITIVE_INFINITY);
 
                 for (int center_id = 0; center_id < k; center_id++) {
                     double[] dist = all_distances[center_id];
@@ -296,7 +296,7 @@ public class KMeans {
                 }
                 if (n_samples == this.distances.length)
                     this.distances = mindist;
-                this.inertia = Matrixes.sum(mindist);
+                this.inertia = Matrices.sum(mindist);
             }
         }
     }

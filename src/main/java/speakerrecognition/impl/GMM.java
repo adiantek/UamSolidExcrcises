@@ -4,7 +4,7 @@ package speakerrecognition.impl;
 // https://commons.apache.org/proper/commons-math/apidocs/org/apache/commons/math3/distribution/fitting/MultivariateNormalMixtureExpectationMaximization.html
 // https://www.ee.washington.edu/techsite/papers/documents/UWEETR-2010-0002.pdf
 
-import speakerrecognition.math.Matrixes;
+import speakerrecognition.math.Matrices;
 import speakerrecognition.math.Statistics;
 
 public class GMM {
@@ -47,12 +47,12 @@ public class GMM {
                 KMeans kMeans = new KMeans(this.observations, this.numOfComponents);
                 kMeans.fit();
                 this.means = kMeans.get_centers();
-                this.weights = Matrixes.fillWith(this.weights, (double) 1 / this.numOfComponents);
+                this.weights = Matrices.fillWith(this.weights, (double) 1 / this.numOfComponents);
 
-                this.covars = Matrixes.cov(Matrixes.transpose(this.observations)); //np.cov(X.T), gmm.py line 450
-                cv = Matrixes.eye(this.observations[0].length, this.min_covar); //self.min_covar * np.eye(X.shape[1])
-                this.covars = Matrixes.addMatrixes(this.covars, cv);
-                this.covars = Matrixes.duplicate(Matrixes.chooseDiagonalValues(this.covars), this.numOfComponents);
+                this.covars = Matrices.cov(Matrices.transpose(this.observations)); //np.cov(X.T), gmm.py line 450
+                cv = Matrices.eye(this.observations[0].length, this.min_covar); //self.min_covar * np.eye(X.shape[1])
+                this.covars = Matrices.addMatrixes(this.covars, cv);
+                this.covars = Matrices.duplicate(Matrices.chooseDiagonalValues(this.covars), this.numOfComponents);
 
                 int n_iter = 10;
                 for (int j = 0; j < n_iter; j++) {
@@ -110,11 +110,11 @@ public class GMM {
 
     private void do_mstep(double[][] data, double[][] responsibilities) {
         try {
-            double[] weights = Matrixes.sum(responsibilities, 0);
-            double[][] weighted_X_sum = Matrixes.multiplyByMatrix(Matrixes.transpose(responsibilities), data);
-            double[] inverse_weights = Matrixes.invertElements(Matrixes.addValue(weights, 10 * EPS));
-            this.weights = Matrixes.addValue(Matrixes.multiplyByValue(weights, 1.0 / (Matrixes.sum(weights) + 10 * EPS)), EPS);
-            this.means = Matrixes.multiplyByValue(weighted_X_sum, inverse_weights);
+            double[] weights = Matrices.sum(responsibilities, 0);
+            double[][] weighted_X_sum = Matrices.multiplyByMatrix(Matrices.transpose(responsibilities), data);
+            double[] inverse_weights = Matrices.invertElements(Matrices.addValue(weights, 10 * EPS));
+            this.weights = Matrices.addValue(Matrices.multiplyByValue(weights, 1.0 / (Matrices.sum(weights) + 10 * EPS)), EPS);
+            this.means = Matrices.multiplyByValue(weighted_X_sum, inverse_weights);
             this.covars = covar_mstep_diag(this.means, data, responsibilities, weighted_X_sum, inverse_weights, this.min_covar);
         } catch (Exception myEx) {
             myEx.printStackTrace();
@@ -126,10 +126,10 @@ public class GMM {
     private double[][] covar_mstep_diag(double[][] means, double[][] X, double[][] responsibilities, double[][] weighted_X_sum, double[] norm, double min_covar) {
         double[][] temp = null;
         try {
-            double[][] avg_X2 = Matrixes.multiplyByValue(Matrixes.multiplyByMatrix(Matrixes.transpose(responsibilities), Matrixes.multiplyMatrixesElByEl(X, X)), norm);
-            double[][] avg_means2 = Matrixes.power(means, 2);
-            double[][] avg_X_means = Matrixes.multiplyByValue(Matrixes.multiplyMatrixesElByEl(means, weighted_X_sum), norm);
-            temp = Matrixes.addValue(Matrixes.addMatrixes(Matrixes.substractMatrixes(avg_X2, Matrixes.multiplyByValue(avg_X_means, 2)), avg_means2), min_covar);
+            double[][] avg_X2 = Matrices.multiplyByValue(Matrices.multiplyByMatrix(Matrices.transpose(responsibilities), Matrices.multiplyMatrixesElByEl(X, X)), norm);
+            double[][] avg_means2 = Matrices.power(means, 2);
+            double[][] avg_X_means = Matrices.multiplyByValue(Matrices.multiplyMatrixesElByEl(means, weighted_X_sum), norm);
+            temp = Matrices.addValue(Matrices.addMatrixes(Matrices.substractMatrixes(avg_X2, Matrices.multiplyByValue(avg_X_means, 2)), avg_means2), min_covar);
         } catch (Exception myEx) {
             System.out.println("An exception encourred: " + myEx.getMessage());
             myEx.printStackTrace();
@@ -155,10 +155,10 @@ public class GMM {
 
             try {
                 double[][] lpr = log_multivariate_normal_density(X, this.means, this.covars);
-                lpr = Matrixes.addValue(lpr, Matrixes.makeLog(weights));
-                this.logprob = Matrixes.logsumexp(lpr);
+                lpr = Matrices.addValue(lpr, Matrices.makeLog(weights));
+                this.logprob = Matrices.logsumexp(lpr);
                 // gmm.py line 321
-                this.responsibilities = Matrixes.exp(Matrixes.substractValue(lpr, logprob));
+                this.responsibilities = Matrices.exp(Matrices.substractValue(lpr, logprob));
             } catch (Exception myEx) {
                 //System.out.println("An exception encourred: " + myEx.getMessage());
                 myEx.printStackTrace();
@@ -182,17 +182,17 @@ public class GMM {
             int n_dim = data[0].length;
 
             try {
-                double[] sumLogCov = Matrixes.sum(Matrixes.makeLog(covars), 1); //np.sum(np.log(covars), 1)
-                double[] sumDivMeanCov = Matrixes.sum(Matrixes.divideElements(Matrixes.power(this.means, 2), this.covars), 1); //np.sum((means ** 2) / covars, 1)
-                double[][] dotXdivMeanCovT = Matrixes.multiplyByValue(Matrixes.multiplyByMatrix(data, Matrixes.transpose(Matrixes.divideElements(means, covars))), -2); //- 2 * np.dot(X, (means / covars).T)
-                double[][] dotXdivOneCovT = Matrixes.multiplyByMatrix(Matrixes.power(data, 2), Matrixes.transpose(Matrixes.invertElements(covars)));
+                double[] sumLogCov = Matrices.sum(Matrices.makeLog(covars), 1); //np.sum(np.log(covars), 1)
+                double[] sumDivMeanCov = Matrices.sum(Matrices.divideElements(Matrices.power(this.means, 2), this.covars), 1); //np.sum((means ** 2) / covars, 1)
+                double[][] dotXdivMeanCovT = Matrices.multiplyByValue(Matrices.multiplyByMatrix(data, Matrices.transpose(Matrices.divideElements(means, covars))), -2); //- 2 * np.dot(X, (means / covars).T)
+                double[][] dotXdivOneCovT = Matrices.multiplyByMatrix(Matrices.power(data, 2), Matrices.transpose(Matrices.invertElements(covars)));
 
 
-                sumLogCov = Matrixes.addValue(sumLogCov, n_dim * Math.log(2 * Math.PI)); //n_dim * np.log(2 * np.pi) + np.sum(np.log(covars), 1)
-                sumDivMeanCov = Matrixes.addMatrixes(sumDivMeanCov, sumLogCov); // n_dim * np.log(2 * np.pi) + np.sum(np.log(covars), 1) + np.sum((means ** 2) / covars, 1)
-                dotXdivOneCovT = Matrixes.sum(dotXdivOneCovT, dotXdivMeanCovT); //- 2 * np.dot(X, (means / covars).T) + np.dot(X ** 2, (1.0 / covars).T)
-                dotXdivOneCovT = Matrixes.addValue(dotXdivOneCovT, sumDivMeanCov); // (n_dim * np.log(2 * np.pi) + np.sum(np.log(covars), 1) + np.sum((means ** 2) / covars, 1) - 2 * np.dot(X, (means / covars).T) + np.dot(X ** 2, (1.0 / covars).T))
-                lpr = Matrixes.multiplyByValue(dotXdivOneCovT, -0.5);
+                sumLogCov = Matrices.addValue(sumLogCov, n_dim * Math.log(2 * Math.PI)); //n_dim * np.log(2 * np.pi) + np.sum(np.log(covars), 1)
+                sumDivMeanCov = Matrices.addMatrixes(sumDivMeanCov, sumLogCov); // n_dim * np.log(2 * np.pi) + np.sum(np.log(covars), 1) + np.sum((means ** 2) / covars, 1)
+                dotXdivOneCovT = Matrices.sum(dotXdivOneCovT, dotXdivMeanCovT); //- 2 * np.dot(X, (means / covars).T) + np.dot(X ** 2, (1.0 / covars).T)
+                dotXdivOneCovT = Matrices.addValue(dotXdivOneCovT, sumDivMeanCov); // (n_dim * np.log(2 * np.pi) + np.sum(np.log(covars), 1) + np.sum((means ** 2) / covars, 1) - 2 * np.dot(X, (means / covars).T) + np.dot(X ** 2, (1.0 / covars).T))
+                lpr = Matrices.multiplyByValue(dotXdivOneCovT, -0.5);
             } catch (Exception myEx) {
                 System.out.println("An exception encourred: " + myEx.getMessage());
                 myEx.printStackTrace();

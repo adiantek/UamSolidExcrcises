@@ -3,7 +3,7 @@ package speakerrecognition.math;
 
 import speakerrecognition.impl.MyException;
 
-public final class Matrixes {
+public final class Matrices {
 
     public static double[] row_mul(double[] x, double y) {
         double[] temp = new double[x.length];
@@ -458,10 +458,10 @@ public final class Matrixes {
 
         try {
             double XX = einsum(x);
-            distances = Matrixes.multiplyByMatrix(y, x);
-            distances = Matrixes.row_mul(distances, -2);
-            distances = Matrixes.addValue(distances, XX);
-            distances = Matrixes.addMatrixes(distances, z);
+            distances = Matrices.multiplyByMatrix(y, x);
+            distances = Matrices.row_mul(distances, -2);
+            distances = Matrices.addValue(distances, XX);
+            distances = Matrices.addMatrixes(distances, z);
         } catch (Exception myEx) {
             //System.out.println("An exception encourred: " + myEx.getMessage());
             myEx.printStackTrace();
@@ -476,10 +476,10 @@ public final class Matrixes {
         double[] XX = null;
         try {
             XX = einsum(x);
-            distances = Matrixes.multiplyByMatrix(x, Matrixes.transpose(y));
-            distances = Matrixes.row_mul(distances, -2);
-            distances = Matrixes.addValue(distances, XX);
-            distances = Matrixes.addValue(distances, z);
+            distances = Matrices.multiplyByMatrix(x, Matrices.transpose(y));
+            distances = Matrices.row_mul(distances, -2);
+            distances = Matrices.addValue(distances, XX);
+            distances = Matrices.addValue(distances, z);
         } catch (Exception myEx) {
             System.out.println("An exception encourred: " + myEx.getMessage());
             myEx.printStackTrace();
@@ -494,16 +494,16 @@ public final class Matrixes {
         double[] X_mean = null;
 
         try {
-            temp = Matrixes.copy2dArray(x);
+            temp = Matrices.copy2dArray(x);
             //////////substracting mean //////////////
-            X_mean = Statistics.getMean(Matrixes.transpose(x));
+            X_mean = Statistics.getMean(Matrices.transpose(x));
             for (int j = 0; j < x[0].length; j++) {
                 for (int i = 0; i < x.length; i++) {
                     temp[i][j] -= X_mean[i];
                 }
             }
 
-            temp = Matrixes.divideByValue(Matrixes.multiplyByMatrix(x, Matrixes.transpose(temp)), (double) x[0].length - 1);
+            temp = Matrices.divideByValue(Matrices.multiplyByMatrix(x, Matrices.transpose(temp)), (double) x[0].length - 1);
         } catch (Exception myEx) {
             System.out.println("An exception encourred: " + myEx.getMessage());
             myEx.printStackTrace();
@@ -618,10 +618,10 @@ public final class Matrixes {
 
         double[] out = null;
         try {
-            double[][] temp = Matrixes.transpose(data);
-            double[] vmax = Matrixes.max(temp, 0);
-            out = Matrixes.makeLog(Matrixes.sum(Matrixes.exp(Matrixes.substractValue(temp, vmax)), 0));
-            out = Matrixes.addMatrixes(out, vmax);
+            double[][] temp = Matrices.transpose(data);
+            double[] vmax = Matrices.max(temp, 0);
+            out = Matrices.makeLog(Matrices.sum(Matrices.exp(Matrices.substractValue(temp, vmax)), 0));
+            out = Matrices.addMatrixes(out, vmax);
         } catch (Exception myEx) {
             //System.out.println("An exception encourred: " + myEx.getMessage());
             myEx.printStackTrace();
