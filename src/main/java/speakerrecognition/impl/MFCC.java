@@ -12,26 +12,23 @@ public class MFCC {
     private static int mfcc_num = 13;
     private static double pre_emph = 0.95;
     private double[] window = null;
-    private double[][] M = null;
     //private double[] CF = null;
     private double[][] melfb_coeffs = null;
     private double[][] mfcc_coeffs = null;
     private int[] samples = null;
-    private int fs;
     private double[][] D1 = null;
 
     public MFCC(int[] x, int y) {
-        this.fs = y;
         this.samples = x;
         this.frame_len = 256;//setFrameLen(fs); !!!!!!!!!!!!! ZMIANA !!!!!!!!!!!!!!!!!!!!!!
         // = 256;
         int fft_size = this.frame_len;
-        this.frame_shift = setFrameShift(fs);
+        this.frame_shift = setFrameShift(y);
         window = hamming(frame_len);
 
         //this.melfb_coeffs = melfb(melfilter_bands, 256, fs); //!!!!!!!!!!!!!!!! USUN�� !!!!!!!!!!!!!!!!!
         int melfilter_bands = 40;
-        this.melfb_coeffs = melfb(melfilter_bands, fft_size, fs);
+        this.melfb_coeffs = melfb(melfilter_bands, fft_size, y);
 
         this.D1 = dctmatrix(melfilter_bands);
 
@@ -101,17 +98,17 @@ public class MFCC {
             pm[i] = pf[i] - fp[i];
         }
 
-        this.M = new double[p][1 + fn2];
+        double[][] m = new double[p][1 + fn2];
         int r = 0;
 
         for (int i = b2 - 1; i < b4; i++) {
             r = (int) fp[i] - 1;
-            this.M[r][i + 1] += 2 * (1 - pm[i]);
+            m[r][i + 1] += 2 * (1 - pm[i]);
         }
 
         for (int i = 0; i < b3; i++) {
             r = (int) fp[i];
-            this.M[r][i + 1] += 2 * pm[i];
+            m[r][i + 1] += 2 * pm[i];
         }
 
         /////////// normalization part //////////
@@ -120,8 +117,8 @@ public class MFCC {
         double[] temp_row = null;
         double row_energy = 0;
         //System.out.println(Integer.toString(M.length));
-        for (int i = 0; i < this.M.length; i++) {
-            temp_row = this.M[i];
+        for (int i = 0; i < m.length; i++) {
+            temp_row = m[i];
             row_energy = energy(temp_row);
             if (row_energy < 0.0001)
                 temp_row[i] = i;
@@ -135,12 +132,12 @@ public class MFCC {
                     row_energy = energy(temp_row);
                 }
             }
-            this.M[i] = temp_row;
+            m[i] = temp_row;
 
         }
 
 
-        return this.M;
+        return m;
     }
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -161,7 +158,7 @@ public class MFCC {
             for (int i = 0; i < frames_num; i++) {
 
                 for (int j = 0; j < this.frame_len; j++) {
-                    frame[j] = (double) this.samples[i * this.frame_shift + j];
+                    frame[j] = this.samples[i * this.frame_shift + j];
                 }
 
                 try {
@@ -244,7 +241,7 @@ public class MFCC {
         }
 
         try {
-            d1 = Matrices.multiplyMatrixesElByEl(x, y);
+            d1 = Matrices.multiplyMatricesElByEl(x, y);
         } catch (Exception myEx) {
             //System.out.println("An exception encourred: " + myEx.getMessage());
             myEx.printStackTrace();

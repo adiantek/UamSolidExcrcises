@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.List;
 
 import speakerrecognition.SpeakerRecognition;
+import speakerrecognition.impl.kmeans.KMeans;
 import speakerrecognition.io.WavFile;
 
 public class SpeakerRecognitionImpl implements SpeakerRecognition {
