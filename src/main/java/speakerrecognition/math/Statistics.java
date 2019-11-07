@@ -1,46 +1,42 @@
 package speakerrecognition.math;
 
 
+import java.util.Arrays;
+
 public final class Statistics {
 
     public static double getMean(double[] data) {
-        double sum = 0.0;
-        for (double a : data)
-            sum += a;
-        return sum / data.length;
+        return Arrays.stream(data).average().orElse(0);
     }
 
     public static double[] getMean(double[][] data) {
         int numOfRows = data.length;
         int numOfCols = data[0].length;
 
-        double sum[] = new double[numOfCols];
+        double[] v = new double[numOfCols];
         for (int j = 0; j < numOfCols; j++) {
             for (double[] datum : data) {
-                //System.out.println(Double.toString(data[i][j]));
-                sum[j] += datum[j];
+                v[j] += datum[j];
             }
-            sum[j] /= numOfRows;
+            v[j] /= numOfRows;
         }
-        //System.out.println("sumaaa");
-        return sum;
+        return v;
     }
 
     public static double[] getVariance(double[][] data) {
         int numOfRows = data.length;
         int numOfCols = data[0].length;
 
-        double[] means = Statistics.getMean(data);
-        double[] temp = new double[numOfCols];
+        double[] means = getMean(data);
+        double[] v = new double[numOfCols];
 
         for (int j = 0; j < numOfCols; j++) {
             for (double[] datum : data) {
-                temp[j] += Math.pow((datum[j] - means[j]), 2);
+                v[j] += (datum[j] - means[j]) * (datum[j] - means[j]);
             }
-            temp[j] /= numOfRows;
+            v[j] /= numOfRows;
         }
 
-        return temp;
+        return v;
     }
-
 }
