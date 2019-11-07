@@ -4,6 +4,9 @@ package speakerrecognition.impl;
 // https://commons.apache.org/proper/commons-math/apidocs/org/apache/commons/math3/distribution/fitting/MultivariateNormalMixtureExpectationMaximization.html
 // https://www.ee.washington.edu/techsite/papers/documents/UWEETR-2010-0002.pdf
 
+import speakerrecognition.math.Matrixes;
+import speakerrecognition.math.Statistics;
+
 public class GMM {
     private static final double EPS = 2.2204460492503131e-16;
     private int numOfComponents;

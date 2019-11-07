@@ -1,6 +1,9 @@
 package speakerrecognition.impl;
 
 
+import speakerrecognition.math.Matrixes;
+import speakerrecognition.math.Statistics;
+
 import java.util.Arrays;
 
 public class KMeans {

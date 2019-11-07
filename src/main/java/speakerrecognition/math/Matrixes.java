@@ -1,5 +1,7 @@
-package speakerrecognition.impl;
+package speakerrecognition.math;
 
+
+import speakerrecognition.impl.MyException;
 
 public final class Matrixes {
 

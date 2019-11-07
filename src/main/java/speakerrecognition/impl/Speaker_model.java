@@ -1,5 +1,8 @@
 package speakerrecognition.impl;
 
+import speakerrecognition.math.Matrixes;
+import speakerrecognition.math.Statistics;
+
 import java.io.Serializable;
 
 public class Speaker_model implements Serializable {

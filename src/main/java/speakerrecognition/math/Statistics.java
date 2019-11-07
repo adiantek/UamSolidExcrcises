@@ -1,4 +1,4 @@
-package speakerrecognition.impl;
+package speakerrecognition.math;
 
 
 public final class Statistics {
