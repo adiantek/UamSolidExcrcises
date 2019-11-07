@@ -4,11 +4,11 @@ package speakerrecognition.impl;
 public class MyException extends Exception {
 
     /**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+     *
+     */
+    private static final long serialVersionUID = 1L;
 
-	public MyException() {
+    public MyException() {
         // TODO Auto-generated constructor stub
     }
 
