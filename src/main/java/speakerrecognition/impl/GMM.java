@@ -1,30 +1,15 @@
 package speakerrecognition.impl;
 
 
-import java.math.*;
-
-
 // https://commons.apache.org/proper/commons-math/apidocs/org/apache/commons/math3/distribution/fitting/MultivariateNormalMixtureExpectationMaximization.html
 // https://www.ee.washington.edu/techsite/papers/documents/UWEETR-2010-0002.pdf
 
 public class GMM {
     private static final double EPS = 2.2204460492503131e-16;
-    private int n_init = 10;
-    private int n_iter = 10;
-    private int numOfRows;
-    private int numOfCols;
-    private int maxIter;
-    private double threshold;
     private int numOfComponents;
     private double[][] observations;
     private double min_covar = 0.001;
-    private boolean converged = false;
     private double current_log_likelihood = 0;
-    private double prev_log_likelihood = Double.NaN;
-    private double tol = 0.001;
-
-    private double[] log_likelihoods = null;
-    private double[][] responsibilities = null;
 
     private double[][] means = null;
     private double[] weights = null;
@@ -39,34 +24,10 @@ public class GMM {
 
     GMM(double[][] data, int compNum) {
         this.observations = data;
-        this.numOfRows = data.length;
-        this.numOfCols = data[0].length;
         this.numOfComponents = compNum;
         this.means = new double[compNum][data[0].length];
         this.weights = new double[data.length];
         this.covars = new double[compNum][data[0].length];
-        //this.gmm = new MultivariateNormalMixtureExpectationMaximization(data);
-    }
-
-    GMM(double[][] data, int compNum, int maxIt) {
-		/*this.observations = data;
-		this.numOfRows = data.length;
-		this.numOfCols = data[0].length;
-		this.numOfComponents = compNum;*/
-        this(data, compNum);
-        this.maxIter = maxIt;
-        //this.gmm = new MultivariateNormalMixtureExpectationMaximization(data);
-    }
-
-    GMM(double[][] data, int compNum, int maxIt, double thr) {
-		/*this.observations = data;
-		this.numOfRows = data.length;
-		this.numOfCols = data[0].length;
-		this.numOfComponents = compNum;*/
-        this(data, compNum);
-        this.maxIter = maxIt;
-        this.threshold = thr;
-
         //this.gmm = new MultivariateNormalMixtureExpectationMaximization(data);
     }
 
@@ -75,10 +36,11 @@ public class GMM {
 
         try {
 
-            double[][] cv = new double[this.numOfCols][this.numOfCols];
+            double[][] cv;
             double max_log_prob = Double.NEGATIVE_INFINITY;
 
-            for (int i = 0; i < this.n_init; i++) {
+            int n_init = 10;
+            for (int i = 0; i < n_init; i++) {
                 KMeans kMeans = new KMeans(this.observations, this.numOfComponents);
                 kMeans.fit();
                 this.means = kMeans.get_centers();
@@ -89,24 +51,26 @@ public class GMM {
                 this.covars = Matrixes.addMatrixes(this.covars, cv);
                 this.covars = Matrixes.duplicate(Matrixes.chooseDiagonalValues(this.covars), this.numOfComponents);
 
-                for (int j = 0; j < this.n_iter; j++) {
-                    prev_log_likelihood = current_log_likelihood;
+                int n_iter = 10;
+                for (int j = 0; j < n_iter; j++) {
+                    double prev_log_likelihood = current_log_likelihood;
                     Score_samples score_samples = new Score_samples(this.observations, this.means, this.covars, this.weights);
-                    this.log_likelihoods = score_samples.getLogprob();
-                    this.responsibilities = score_samples.getResponsibilities();
+                    double[] log_likelihoods = score_samples.getLogprob();
+                    double[][] responsibilities = score_samples.getResponsibilities();
                     current_log_likelihood = Statistics.getMean(log_likelihoods);
 
                     if (!Double.isNaN(prev_log_likelihood)) {
                         change = Math.abs(current_log_likelihood - prev_log_likelihood);
-                        if (change < this.tol) {
-                            this.converged = true;
+                        double tol = 0.001;
+                        if (change < tol) {
+                            boolean converged = true;
                             break;
                         }
 
                     }
 
                     /// do m-step - gmm.py line 509
-                    do_mstep(this.observations, this.responsibilities);
+                    do_mstep(this.observations, responsibilities);
 
                 }
 
@@ -172,11 +136,8 @@ public class GMM {
     }
 
     private class Score_samples {
-        private double[][] data = null;
-        private double[] log_likelihoods = null;
         private double[][] means = null;
         private double[][] covars = null;
-        private double[] weights = null;
         /////out matrixes////
         private double[] logprob = null;
         private double[][] responsibilities = null;
@@ -184,17 +145,14 @@ public class GMM {
 
 
         Score_samples(double[][] X, double[][] means, double[][] covars, double[] weights) {
-            this.data = X;
-            this.log_likelihoods = new double[X.length];
             this.responsibilities = new double[X.length][GMM.this.numOfComponents];
             this.means = means;
             this.covars = covars;
-            this.weights = weights;
 
 
             try {
-                double[][] lpr = log_multivariate_normal_density(this.data, this.means, this.covars);
-                lpr = Matrixes.addValue(lpr, Matrixes.makeLog(this.weights));
+                double[][] lpr = log_multivariate_normal_density(X, this.means, this.covars);
+                lpr = Matrixes.addValue(lpr, Matrixes.makeLog(weights));
                 this.logprob = Matrixes.logsumexp(lpr);
                 // gmm.py line 321
                 this.responsibilities = Matrixes.exp(Matrixes.substractValue(lpr, logprob));

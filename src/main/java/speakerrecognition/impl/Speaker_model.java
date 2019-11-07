@@ -19,18 +19,6 @@ public class Speaker_model implements Serializable {
         this.name = name;
     }
 
-    public double[][] getMeans() {
-        return this.means;
-    }
-
-    public double[][] getCovars() {
-        return this.covars;
-    }
-
-    public double[] getWeights() {
-        return this.weights;
-    }
-
     public String getName() {
         return this.name;
     }

@@ -8,10 +8,7 @@ public class MFCC {
 
     private int frame_len;
     private int frame_shift;
-    private int fft_size;// = 256;
-    private static int melfilter_bands = 40;
     private static int mfcc_num = 13;
-    private static double power_spectrum_floor = 0.0001;
     private static double pre_emph = 0.95;
     private double[] window = null;
     private double[][] M = null;
@@ -26,11 +23,13 @@ public class MFCC {
         this.fs = y;
         this.samples = x;
         this.frame_len = 256;//setFrameLen(fs); !!!!!!!!!!!!! ZMIANA !!!!!!!!!!!!!!!!!!!!!!
-        this.fft_size = this.frame_len;
+        // = 256;
+        int fft_size = this.frame_len;
         this.frame_shift = setFrameShift(fs);
         window = hamming(frame_len);
 
         //this.melfb_coeffs = melfb(melfilter_bands, 256, fs); //!!!!!!!!!!!!!!!! USUN�� !!!!!!!!!!!!!!!!!
+        int melfilter_bands = 40;
         this.melfb_coeffs = melfb(melfilter_bands, fft_size, fs);
 
         this.D1 = dctmatrix(melfilter_bands);
@@ -39,10 +38,6 @@ public class MFCC {
     }
 
 /////////// setters for MFCC parameters ///////////////////////
-
-    private int setFrameLen(int sample_rate) {
-        return (int) (0.025 * (double) (sample_rate));
-    }
 
     private int setFrameShift(int sample_rate) {
         return (int) (0.0125 * (double) (sample_rate));
@@ -181,6 +176,7 @@ public class MFCC {
                     for (int k = 0; k < (this.frame_len / 2 + 1); k++) {
                         fft_final[k] = Math.pow(Math.sqrt(Math.pow(fft1[k * 2], 2) + Math.pow(fft1[k * 2 + 1], 2)), 2);
 
+                        double power_spectrum_floor = 0.0001;
                         if (fft_final[k] < power_spectrum_floor) fft_final[k] = power_spectrum_floor;
                     }
 
@@ -223,8 +219,7 @@ public class MFCC {
 
     private static double energy(double[] x) {
         double en = 0;
-        for (int i = 0; i < x.length; i++)
-            en = en + Math.pow(x[i], 2);
+        for (double v : x) en = en + Math.pow(v, 2);
         return en;
     }
 
@@ -266,9 +261,7 @@ public class MFCC {
 
         double[][] d = new double[MFCC.mfcc_num][n];
         for (int i = 1; i < MFCC.mfcc_num + 1; i++) {
-            for (int j = 0; j < n; j++) {
-                d[i - 1][j] = d1[i][j];
-            }
+            System.arraycopy(d1[i], 0, d[i - 1], 0, n);
 
         }
 

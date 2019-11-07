@@ -14,7 +14,7 @@ public final class Matrixes {
     public static double[] row_mul(double[] x, double[] y) throws MyException {
 
         if (x.length != y.length)
-            throw new MyException("Cannot multiply vectors el by el. Vectors must have same length, while it is [" + Integer.toString(x.length) + "] and [" + Integer.toString(y.length) + "].");
+            throw new MyException("Cannot multiply vectors el by el. Vectors must have same length, while it is [" + x.length + "] and [" + y.length + "].");
         else {
             double[] temp = new double[x.length];
             for (int i = 0; i < x.length; i++) {
@@ -38,7 +38,7 @@ public final class Matrixes {
         int m1ColLength = m1[0].length; // m1 columns length
         int m2RowLength = m2.length;    // m2 rows length
         if (m1ColLength != m2RowLength) {
-            throw new MyException("While multiplying matrixes, number of columns of first array [" + Integer.toString(m1ColLength) + "] must be the same as number of rows in second array [" + Integer.toString(m2RowLength) + "]. Obviously, it is not.");//return null; // matrix multiplication is not possible
+            throw new MyException("While multiplying matrixes, number of columns of first array [" + m1ColLength + "] must be the same as number of rows in second array [" + m2RowLength + "]. Obviously, it is not.");//return null; // matrix multiplication is not possible
         }
         int mRRowLength = m1.length;    // m result rows length
         int mRColLength = m2[0].length; // m result columns length
@@ -57,12 +57,11 @@ public final class Matrixes {
         int m1ColLength = m1[0].length; // m1 columns length
         int m2RowLength = m2.length;    // m2 rows length
         if (m1ColLength != m2RowLength) //return null; // matrix multiplication is not possible
-            throw new MyException("While multiplying matrix by vector, number of columns of first array [" + Integer.toString(m1ColLength) + "] must be the same as number of rows (elements) in second vector [" + Integer.toString(m2RowLength) + "]. Obviously, it is not.");
+            throw new MyException("While multiplying matrix by vector, number of columns of first array [" + m1ColLength + "] must be the same as number of rows (elements) in second vector [" + m2RowLength + "]. Obviously, it is not.");
         int mRRowLength = m1.length;    // m result rows length
-        int mRColLength = m2RowLength; // m result columns length
         double[] mResult = new double[mRRowLength];
         for (int i = 0; i < mRRowLength; i++) {         // rows from m1
-            for (int j = 0; j < mRColLength; j++) {     // columns from m2
+            for (int j = 0; j < m2RowLength; j++) {     // columns from m2
                 mResult[i] += m1[i][j] * m2[j];
             }
         }
@@ -74,7 +73,7 @@ public final class Matrixes {
         if (m1.length != m2.length || m1[0].length != m2[0].length) {
             //System.out.println("Matrixes must have equal dimensions");
             //return null;
-            throw new MyException("While multiplying matrixex element by element, they must have equal dimmensions, while it is [" + Integer.toString(m1.length) + "][" + Integer.toString(m1[0].length) + "] and [" + Integer.toString(m2.length) + "][" + Integer.toString(m2[0].length) + "].");
+            throw new MyException("While multiplying matrixex element by element, they must have equal dimmensions, while it is [" + m1.length + "][" + m1[0].length + "] and [" + m2.length + "][" + m2[0].length + "].");
         }
 		
 		/*double[][] result = new double[m1.length][m1.length];
@@ -103,24 +102,22 @@ public final class Matrixes {
         return temp;
     }
 
-    public static double[][] multiplyByValue(double[][] x, double y[]) throws MyException {
+    public static double[][] multiplyByValue(double[][] x, double[] y) throws MyException {
         double[][] temp = new double[x.length][x[0].length];
 
         if (x.length != y.length && x[0].length != y.length)
-            throw new MyException("Cannot multiply matrix by vecror element by element, neither row-wise nor column-wise. Number of elements in vector [" + Integer.toString(y.length) + "] must be equal to any of dimmension parameters of first array [" + Integer.toString(x.length) + "][" + Integer.toString(x[0].length) + "].");
+            throw new MyException("Cannot multiply matrix by vecror element by element, neither row-wise nor column-wise. Number of elements in vector [" + y.length + "] must be equal to any of dimmension parameters of first array [" + x.length + "][" + x[0].length + "].");
 
         if (x.length == y.length) {
             for (int i = 0; i < x[0].length; i++) {
                 for (int j = 0; j < x.length; j++)
                     temp[j][i] = x[j][i] * y[j];
             }
-        } else if (x[0].length == y.length) {
+        } else {
             for (int i = 0; i < x.length; i++) {
                 for (int j = 0; j < x[0].length; j++)
                     temp[i][j] = x[i][j] * y[j];
             }
-        } else {
-            System.out.println("Mismatched matrix dimensions");
         }
 
 
@@ -186,10 +183,10 @@ public final class Matrixes {
         return temp;
     }
 
-    public static double[][] substractValue(double[][] x, double y[]) throws MyException {
+    public static double[][] substractValue(double[][] x, double[] y) throws MyException {
 
         if (x.length != y.length && x[0].length != y.length)
-            throw new MyException("Cannot substract vecror from array element by element, neither row-wise nor column-wise. Number of elements in vector [" + Integer.toString(y.length) + "] must be equal to any of dimmension parameters of first array [" + Integer.toString(x.length) + "][" + Integer.toString(x[0].length) + "].");
+            throw new MyException("Cannot substract vecror from array element by element, neither row-wise nor column-wise. Number of elements in vector [" + y.length + "] must be equal to any of dimmension parameters of first array [" + x.length + "][" + x[0].length + "].");
         double[][] temp = new double[x.length][x[0].length];
         // [n][m] + [n][1], m times
         // [n][m] + [1][m] n times
@@ -198,13 +195,11 @@ public final class Matrixes {
                 for (int j = 0; j < x[0].length; j++)
                     temp[i][j] = x[i][j] - y[i];
             }
-        } else if (x[0].length == y.length) {
+        } else {
             for (int i = 0; i < x.length; i++) {
                 for (int j = 0; j < x[0].length; j++)
                     temp[i][j] = x[i][j] - y[j];
             }
-        } else {
-            System.out.println("Incorrect matrixes dimensions");
         }
 
 
@@ -235,11 +230,11 @@ public final class Matrixes {
         return temp;
     }
 
-    public static double[][] addValue(double[][] x, double y[]) throws MyException {
+    public static double[][] addValue(double[][] x, double[] y) throws MyException {
         double[][] temp = new double[x.length][x[0].length];
 
         if (x.length != y.length && x[0].length != y.length)
-            throw new MyException("Cannot add vecror to array element by element, neither row-wise nor column-wise. Number of elements in vector [" + Integer.toString(y.length) + "] must be equal to any of dimmension parameters of first array [" + Integer.toString(x.length) + "][" + Integer.toString(x[0].length) + "].");
+            throw new MyException("Cannot add vecror to array element by element, neither row-wise nor column-wise. Number of elements in vector [" + y.length + "] must be equal to any of dimmension parameters of first array [" + x.length + "][" + x[0].length + "].");
 
         // [n][m] + [n][1], m times
         // [n][m] + [1][m] n times
@@ -248,13 +243,11 @@ public final class Matrixes {
                 for (int j = 0; j < x[0].length; j++)
                     temp[i][j] = x[i][j] + y[i];
             }
-        } else if (x[0].length == y.length) {
+        } else {
             for (int i = 0; i < x.length; i++) {
                 for (int j = 0; j < x[0].length; j++)
                     temp[i][j] = x[i][j] + y[j];
             }
-        } else {
-            System.out.println("Incorrect matrixes dimensions");
         }
 
 
@@ -265,7 +258,7 @@ public final class Matrixes {
         double[] temp = new double[x.length];
 
         if (x.length != y.length)
-            throw new MyException("Cannot add vectors el by el. Vectors must have same length, while it is [" + Integer.toString(x.length) + "] and [" + Integer.toString(y.length) + "].");
+            throw new MyException("Cannot add vectors el by el. Vectors must have same length, while it is [" + x.length + "] and [" + y.length + "].");
 
         for (int i = 0; i < x.length; i++)
             temp[i] = x[i] + y[i];
@@ -277,7 +270,7 @@ public final class Matrixes {
         if (x.length != y.length || x[0].length != y[0].length) {
             //System.out.println("Matrixes must have equal dimensions");
             //return null;
-            throw new MyException("While adding matrixes element by element, they must have equal dimmensions, while it is [" + Integer.toString(x.length) + "][" + Integer.toString(x[0].length) + "] and [" + Integer.toString(y.length) + "][" + Integer.toString(y[0].length) + "].");
+            throw new MyException("While adding matrixes element by element, they must have equal dimmensions, while it is [" + x.length + "][" + x[0].length + "] and [" + y.length + "][" + y[0].length + "].");
         }
 
         double[][] temp = new double[x.length][x[0].length];
@@ -293,7 +286,7 @@ public final class Matrixes {
         if (x.length != y.length || x[0].length != y[0].length) {
             //System.out.println("Matrixes must have equal dimensions");
             //return null;
-            throw new MyException("While substracting matrixes element by element, they must have equal dimmensions, while it is [" + Integer.toString(x.length) + "][" + Integer.toString(x[0].length) + "] and [" + Integer.toString(y.length) + "][" + Integer.toString(y[0].length) + "].");
+            throw new MyException("While substracting matrixes element by element, they must have equal dimmensions, while it is [" + x.length + "][" + x[0].length + "] and [" + y.length + "][" + y[0].length + "].");
         }
 
         double[][] temp = new double[x.length][x[0].length];
@@ -306,17 +299,17 @@ public final class Matrixes {
 
     public static double sum(double[] x) {
         double result = 0;
-        for (int i = 0; i < x.length; i++) {
-            result += x[i];
+        for (double v : x) {
+            result += v;
         }
         return result;
     }
 
     public static double sum(double[][] x) {
         double result = 0;
-        for (int i = 0; i < x.length; i++) {
+        for (double[] doubles : x) {
             for (int j = 0; j < x[0].length; j++) {
-                result += x[i][j];
+                result += doubles[j];
             }
         }
         return result;
@@ -326,7 +319,7 @@ public final class Matrixes {
         double[] result = null;
 
         if (axis != 0 && axis != 1)
-            throw new MyException("Wrong axis, sholud be 1 or 2, and is " + Integer.toString(axis));
+            throw new MyException("Wrong axis, sholud be 1 or 2, and is " + axis);
 
         if (axis == 1) {
             result = new double[x.length];
@@ -335,11 +328,11 @@ public final class Matrixes {
                     result[i] += x[i][j];
                 }
             }
-        } else if (axis == 0) {
+        } else {
             result = new double[x[0].length];
             for (int i = 0; i < x[0].length; i++) {
-                for (int j = 0; j < x.length; j++) {
-                    result[i] += x[j][i];
+                for (double[] doubles : x) {
+                    result[i] += doubles[i];
                 }
             }
         }
@@ -353,7 +346,7 @@ public final class Matrixes {
         if (x.length != y.length || x[0].length != y[0].length) {
             //System.out.println("Matrixes must have equal dimensions");
             //return null;
-            throw new MyException("While adding matrixes element by element, they must have equal dimmensions, while it is [" + Integer.toString(x.length) + "][" + Integer.toString(x[0].length) + "] and [" + Integer.toString(y.length) + "][" + Integer.toString(y[0].length) + "].");
+            throw new MyException("While adding matrixes element by element, they must have equal dimmensions, while it is [" + x.length + "][" + x[0].length + "] and [" + y.length + "][" + y[0].length + "].");
         }
 
         double[][] temp = new double[x.length][x[0].length];
@@ -416,13 +409,9 @@ public final class Matrixes {
     public static double[] minimum(double[] x, double[] y) throws MyException {
         double[] temp = new double[x.length];
         if (x.length != y.length)
-            throw new MyException("Cannot search minimum value from two vectors of different length - [" + Integer.toString(x.length) + "] and [" + Integer.toString(y.length) + "].");
+            throw new MyException("Cannot search minimum value from two vectors of different length - [" + x.length + "] and [" + y.length + "].");
         for (int i = 0; i < x.length; i++) {
-            if (y[i] < x[i]) {
-                temp[i] = y[i];
-            } else {
-                temp[i] = x[i];
-            }
+            temp[i] = Math.min(y[i], x[i]);
         }
 
 
@@ -432,11 +421,10 @@ public final class Matrixes {
     public static double[] select_row(double[][] x, int y) throws MyException {
 
         if (y > x.length - 1)
-            throw new MyException("Selected row out of range - " + Integer.toString(y) + ". of " + Integer.toString(x.length) + " rows (remember aobout 0th row!).");
+            throw new MyException("Selected row out of range - " + y + ". of " + x.length + " rows (remember aobout 0th row!).");
 
-        double result[] = new double[x[0].length];
-        for (int i = 0; i < x[0].length; i++)
-            result[i] = x[y][i];
+        double[] result = new double[x[0].length];
+        System.arraycopy(x[y], 0, result, 0, x[0].length);
         return result;
     }
 
@@ -547,7 +535,7 @@ public final class Matrixes {
         for (int i = 0; i < x.length; i++) {
 
             if (x[i] <= 0)
-                throw new MyException("Cannot make Log of value below 0 - Log(" + Double.toString(x[i]) + "), (index " + Integer.toString(i) + ").");
+                throw new MyException("Cannot make Log of value below 0 - Log(" + x[i] + "), (index " + i + ").");
             temp[i] = Math.log(x[i]);
 
         }
@@ -560,7 +548,7 @@ public final class Matrixes {
             for (int j = 0; j < x[0].length; j++) {
 
                 if (x[i][j] <= 0)
-                    throw new MyException("Cannot make Log of value below 0 - Log(" + Double.toString(x[i][j]) + "), (index [" + Integer.toString(i) + "," + Integer.toString(j) + "]).");
+                    throw new MyException("Cannot make Log of value below 0 - Log(" + x[i][j] + "), (index [" + i + "," + j + "]).");
 
                 temp[i][j] = Math.log(x[i][j]);
             }
@@ -572,7 +560,7 @@ public final class Matrixes {
         double[] temp = new double[x.length];
         for (int i = 0; i < x.length; i++) {
             if (x[i] == 0)
-                throw new MyException("While inverting values, cannot divide by 0, (index " + Integer.toString(i) + ").");
+                throw new MyException("While inverting values, cannot divide by 0, (index " + i + ").");
             temp[i] = 1 / (x[i]);
         }
         return temp;
@@ -585,7 +573,7 @@ public final class Matrixes {
             for (int j = 0; j < x[0].length; j++) {
 
                 if (x[i][j] <= 0)
-                    throw new MyException("While inverting values, cannot divide by 0 (index [" + Integer.toString(i) + "," + Integer.toString(j) + "]).");
+                    throw new MyException("While inverting values, cannot divide by 0 (index [" + i + "," + j + "]).");
                 temp[i][j] = 1 / (x[i][j]);
             }
         }
@@ -598,7 +586,7 @@ public final class Matrixes {
         if (x.length != y.length || x[0].length != y[0].length) {
             //System.out.println("Matrixes must have equal dimensions");
             //return null;
-            throw new MyException("While dividing element by element, they must have equal dimmensions, now it is [" + Integer.toString(x.length) + "][" + Integer.toString(x[0].length) + "] and [" + Integer.toString(y.length) + "][" + Integer.toString(y[0].length) + "].");
+            throw new MyException("While dividing element by element, they must have equal dimmensions, now it is [" + x.length + "][" + x[0].length + "] and [" + y.length + "][" + y[0].length + "].");
         }
 
         double[][] result = new double[x.length][x[0].length];
@@ -606,7 +594,7 @@ public final class Matrixes {
         for (int i = 0; i < y.length; i++) {
             for (int j = 0; j < x[0].length; j++) {
                 if (y[i][j] <= 0)
-                    throw new MyException("While inverting values, cannot divide by 0 (y[" + Integer.toString(i) + "][" + Integer.toString(j) + "]).");
+                    throw new MyException("While inverting values, cannot divide by 0 (y[" + i + "][" + j + "]).");
                 result[i][j] = x[i][j] / y[i][j];
             }
         }
@@ -650,10 +638,10 @@ public final class Matrixes {
     }
 
     public static double[] max(double[][] x, int axis) throws MyException {
-        double vmax[] = null;
+        double[] vmax = null;
 
         if (axis != 0 && axis != 1)
-            throw new MyException("Wrong axis, sholud be 0 or 1, and is " + Integer.toString(axis));
+            throw new MyException("Wrong axis, sholud be 0 or 1, and is " + axis);
 
         if (axis == 0) {
             vmax = new double[x[0].length];
@@ -663,11 +651,11 @@ public final class Matrixes {
             }  //JAK CO TO USUN��!!!
 
             for (int i = 0; i < x[0].length; i++) {
-                for (int j = 0; j < x.length; j++)
-                    if (vmax[i] < x[j][i])
-                        vmax[i] = x[j][i];
+                for (double[] doubles : x)
+                    if (vmax[i] < doubles[i])
+                        vmax[i] = doubles[i];
             }
-        } else if (axis == 1) {
+        } else {
             vmax = new double[x.length];
 
             for (int i = 0; i < x.length; i++) {
@@ -684,13 +672,6 @@ public final class Matrixes {
 
 
         return vmax;
-    }
-
-    public static double[][] eye(int n) {
-        double[][] temp = new double[n][n];
-        for (int i = 0; i < n; i++)
-            temp[i][i] = 1;
-        return temp;
     }
 
     public static double[][] eye(int n, double coef) {
@@ -720,13 +701,4 @@ public final class Matrixes {
         return temp;
     }
 
-    public static int[] range(int x, int y) throws MyException {
-        if (x < 1)
-            throw new MyException("Can not create table of length less than 1");
-        int[] temp = new int[x];
-        for (int i = 0; i < x; i++) {
-            temp[i] = i + y;
-        }
-        return temp;
-    }
 }

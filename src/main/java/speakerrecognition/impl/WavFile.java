@@ -8,12 +8,9 @@ import java.nio.file.Paths;
 
 
 public class WavFile {
-    private byte[] byte_samples;
     private int[] samples;
     private int fs;
     private Path file_path;
-    private int samples_num;
-    private int channels_num;
 
 
     ///////////////// constructor /////////////////////////////////////////////
@@ -45,24 +42,24 @@ public class WavFile {
         }
 
 
-        byte_samples = new byte[(int) in.length()];
+        byte[] byte_samples = new byte[(int) in.length()];
 
 
         in.read(byte_samples, 0, (int) (in.length()));
 
-        this.samples_num = getSamplesNum(byte_samples[40], byte_samples[41], byte_samples[42], byte_samples[43]);
-        this.channels_num = getChannelsNum(byte_samples[22], byte_samples[23]);
+        int samples_num = getSamplesNum(byte_samples[40], byte_samples[41], byte_samples[42], byte_samples[43]);
+        int channels_num = getChannelsNum(byte_samples[22], byte_samples[23]);
 
         //samples = new int[(int) (in.length()-44)/2/this.channels_num];
-        samples = new int[this.samples_num / 2 / this.channels_num];
+        samples = new int[samples_num / 2 / channels_num];
 
         this.fs = getFs(byte_samples[24], byte_samples[25], byte_samples[26], byte_samples[27]);
 
-        if (this.channels_num == 1) {
+        if (channels_num == 1) {
             for (int i = 44; i < (samples_num + 44) / 2; i++) {
                 samples[i - 44] = toInt(byte_samples[(i - 44) * 2 + 45], byte_samples[(i - 44) * 2 + 44]);
             }
-        } else if (this.channels_num == 2) {
+        } else if (channels_num == 2) {
             int j = 44;
             for (int i = 44; i < (samples_num + 44) / 2; i += 2) {
                 samples[j - 44] = (toInt(byte_samples[(i - 44) * 2 + 45], byte_samples[(i - 44) * 2 + 44]) + toInt(byte_samples[(i - 44) * 2 + 47], byte_samples[(i - 44) * 2 + 46])) / 2;

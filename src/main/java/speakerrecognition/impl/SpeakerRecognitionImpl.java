@@ -58,14 +58,11 @@ public class SpeakerRecognitionImpl implements SpeakerRecognition {
             }
 
         }
-        String recogResult = "Test speech from file " + resourceSoundSpeechFilePath + " is most similar to model " + bestFittingModelName;
-        return recogResult;
+        return "Test speech from file " + resourceSoundSpeechFilePath + " is most similar to model " + bestFittingModelName;
     }
 
     public void printLogProbsForRecognition(List<Speaker_model> speakerModels, String resourceSoundSpeechFilePath)
             throws IOException, MyException {
-        double finalScore = Long.MIN_VALUE;
-        String bestFittingModelName = "";
         for (Speaker_model model : speakerModels) {
             WavFile wavFile1 = new WavFile(resourceSoundSpeechFilePath);
             wavFile1.open();

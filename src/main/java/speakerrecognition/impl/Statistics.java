@@ -16,9 +16,9 @@ public final class Statistics {
 
         double sum[] = new double[numOfCols];
         for (int j = 0; j < numOfCols; j++) {
-            for (int i = 0; i < numOfRows; i++) {
+            for (double[] datum : data) {
                 //System.out.println(Double.toString(data[i][j]));
-                sum[j] += data[i][j];
+                sum[j] += datum[j];
             }
             sum[j] /= numOfRows;
         }
@@ -26,45 +26,21 @@ public final class Statistics {
         return sum;
     }
 
-    public static double getVariance(double[] data) {
-        double mean = getMean(data);
-        double temp = 0;
-        for (double a : data)
-            temp += (mean - a) * (mean - a);
-        return temp / data.length;
-    }
-
     public static double[] getVariance(double[][] data) {
         int numOfRows = data.length;
         int numOfCols = data[0].length;
 
-        double means[] = Statistics.getMean(data);
+        double[] means = Statistics.getMean(data);
         double[] temp = new double[numOfCols];
 
         for (int j = 0; j < numOfCols; j++) {
-            for (int i = 0; i < numOfRows; i++) {
-                temp[j] += Math.pow((data[i][j] - means[j]), 2);
+            for (double[] datum : data) {
+                temp[j] += Math.pow((datum[j] - means[j]), 2);
             }
             temp[j] /= numOfRows;
         }
 
         return temp;
-    }
-
-    public static double getStdDev(double[] data) {
-        return Math.sqrt(getVariance(data));
-    }
-
-    public static double[] getStdDev(double[][] data) {
-        //int numOfRows = data.length;
-        int numOfCols = data[0].length;
-
-        double[] temp = getVariance(data);
-        for (int i = 0; i < numOfCols; i++) {
-            temp[i] = Math.sqrt(temp[i]);
-        }
-        return temp;
-
     }
 
 }
