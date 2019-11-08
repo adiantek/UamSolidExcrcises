@@ -12,7 +12,7 @@ public class KMeans {
     private int numOfCols;
     private double[][] data;
     private double tol = 0.0001;
-    private double[][] best_cluster_centers = null;
+    private double[][] best_cluster_centers;
     private double best_inertia = Double.MAX_VALUE;
 
     public KMeans(double[][] x, int numOfClust) {
@@ -27,7 +27,7 @@ public class KMeans {
     }
 
     public void fit() {
-        double[][] cluster_centers = null;
+        double[][] clusterCenters;
         double inertia = 0;
         double[] X_mean = Statistics.getMean(data);
         for (int i = 0; i < this.numOfRows; i++) {
@@ -35,28 +35,27 @@ public class KMeans {
                 data[i][j] -= X_mean[j];
             }
         }
-        double[] x_squared_norms = Matrices.einsum(data);
+        double[] xSquaredNorms = Matrices.einsum(data);
         int n_init = 10;
         for (int i = 0; i < n_init; i++) {
             int max_iter = 300;
-            KmeansSingle kmeans_single = new KmeansSingle(this.data, this.numOfClusters, x_squared_norms, max_iter, this.tol, numOfRows, numOfCols);
-            cluster_centers = kmeans_single.getBestCenters().clone();
-            inertia = kmeans_single.getBestInertia();
+            KmeansSingle kmeansSingle = new KmeansSingle(this.data, this.numOfClusters, xSquaredNorms, max_iter, this.tol, numOfRows, numOfCols);
+            clusterCenters = kmeansSingle.getBestCenters().clone();
+            inertia = kmeansSingle.getBestInertia();
             if (inertia < this.best_inertia) {
                 this.best_inertia = inertia;
-                this.best_cluster_centers = cluster_centers.clone();
+                this.best_cluster_centers = clusterCenters.clone();
             }
         }
         this.best_cluster_centers = Matrices.addValue(this.best_cluster_centers, X_mean);
 
     }
 
-    public double[][] get_centers() {
+    public double[][] getCenters() {
         return this.best_cluster_centers;
     }
 
-
-    public static double[][] centers_dense(double[][] X, int[] labels, int n_clusters, double[] distances) {
+    static double[][] centersDense(double[][] X, int[] labels, int n_clusters) {
         double[][] result = new double[n_clusters][X[0].length];
         for (int j = 0; j < X[0].length; j++) {
             double[] sum = new double[n_clusters];
@@ -78,7 +77,7 @@ public class KMeans {
 
     }
 
-    public static double[][] init_centroids(double[][] data, int n_clusters, double[] x_sq_norms, int numOfRows, int numOfCols) {
+    static double[][] initCentroids(double[][] data, int n_clusters, double[] x_sq_norms, int numOfRows, int numOfCols) {
         double[][] centers = new double[n_clusters][numOfCols];
 
         int n_local_trials = 2 + (int) (Math.log(n_clusters));

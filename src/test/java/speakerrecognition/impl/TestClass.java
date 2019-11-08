@@ -29,7 +29,7 @@ public class TestClass {
         double[][] speaker_mfcc = mfcc.getMFCC();
         GMM gmm = new GMM(speaker_mfcc, 32);
         gmm.fit();
-        SpeakerModel speakerModel1 = new SpeakerModel(gmm.get_means(), gmm.get_covars(), gmm.get_weights(), "speaker1model");
+        SpeakerModel speakerModel1 = new SpeakerModel(gmm.getMeans(), gmm.getCovars(), gmm.getWeights(), "speaker1model");
 
         WavFile wavFile2 = new WavFile("src\\test\\resources\\training\\speaker2_2.WAV");
         wavFile2.open();
@@ -39,7 +39,7 @@ public class TestClass {
         double[][] speaker_mfcc2 = mfcc2.getMFCC();
         GMM gmm2 = new GMM(speaker_mfcc2, 32);
         gmm2.fit();
-        SpeakerModel speakerModel2 = new SpeakerModel(gmm2.get_means(), gmm2.get_covars(), gmm2.get_weights(), "speaker2model");
+        SpeakerModel speakerModel2 = new SpeakerModel(gmm2.getMeans(), gmm2.getCovars(), gmm2.getWeights(), "speaker2model");
 
         List<SpeakerModel> speakerModels = Arrays.asList(speakerModel1, speakerModel2);
 

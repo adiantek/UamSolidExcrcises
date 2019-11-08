@@ -1,7 +1,5 @@
 package speakerrecognition.impl.kmeans;
 
-import speakerrecognition.math.Matrices;
-
 class LabelsInertia {
     private int[] labels;
     private double[] distances;
@@ -19,17 +17,11 @@ class LabelsInertia {
         return this.distances.clone();
     }
 
-    LabelsInertia(double[][] X, double[] x_squared_norms, double[][] centers, double[] distances) {
+    LabelsInertia(double[][] X, double[] xSquaredNorms, double[][] centers, double[] distances) {
         this.distances = distances;
-
-        int n_samples = X.length;
-        int[] labels = new int[n_samples];
-        labels = Matrices.addValue(labels, -1);
-
-        LabelsPrecomputeDence result = new LabelsPrecomputeDence(X, x_squared_norms, centers, this.distances);
-        this.labels = result.labels.clone();
-        this.inertia = result.inertia;
-        this.distances = result.distances.clone();
-
+        LabelsPrecomputeDence result = new LabelsPrecomputeDence(X, xSquaredNorms, centers, this.distances);
+        this.labels = result.getLabels().clone();
+        this.inertia = result.getInertia();
+        this.distances = result.getDistances().clone();
     }
 }

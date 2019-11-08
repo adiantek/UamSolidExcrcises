@@ -6,7 +6,7 @@ import speakerrecognition.math.MFCCProcessingUtils;
 import speakerrecognition.math.Matrices;
 
 
-public class MFCC {
+class MFCC {
 
     private int frame_len;
     private int frame_shift;
@@ -16,7 +16,7 @@ public class MFCC {
     private int[] samples;
     private double[][] D1;
 
-    public MFCC(int[] x, int y) {
+    MFCC(int[] x, int y) {
         this.samples = x;
         this.frame_len = 256;
         int fft_size = this.frame_len;

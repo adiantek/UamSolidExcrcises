@@ -10,23 +10,23 @@ public class SpeakerModel implements Serializable {
      *
      */
     private static final long serialVersionUID = 1L;
-    private double[][] means = null;
-    private double[][] covars = null;
-    private double[] weights = null;
-    private String name = null;
+    private double[][] means;
+    private double[][] covars;
+    private double[] weights;
+    private String name;
 
-    public SpeakerModel(double[][] means, double[][] covars, double[] weights, String name) {
+    SpeakerModel(double[][] means, double[][] covars, double[] weights, String name) {
         this.means = means;
         this.covars = covars;
         this.weights = weights;
         this.name = name;
     }
 
-    public String getName() {
+    String getName() {
         return this.name;
     }
 
-    public double getScore(double[][] data) {
+    double getScore(double[][] data) {
         double score = 0;
         double[] logprob = null;
         double[][] lpr = log_multivariate_normal_density(data, this.means, this.covars);

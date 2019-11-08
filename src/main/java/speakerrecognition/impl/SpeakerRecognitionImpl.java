@@ -25,13 +25,13 @@ public class SpeakerRecognitionImpl implements SpeakerRecognition {
     public double[][] getMeansOfClustersFor2DdataByGMM(double[][] data, int numOfClusters) {
         GMM gmm = new GMM(data, numOfClusters);
         gmm.fit();
-        return gmm.get_means();
+        return gmm.getMeans();
     }
 
     public double[][] getMeansOfClustersFor2DdataByKMeans(double[][] data, int numOfClusters) {
         KMeans kMeans = new KMeans(data, numOfClusters);
         kMeans.fit();
-        return kMeans.get_centers();
+        return kMeans.getCenters();
     }
 
     public double getLogProbabilityOfDataUnderModel(SpeakerModel model, double[][] dataToBeTested) {

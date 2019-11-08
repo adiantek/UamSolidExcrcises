@@ -3,9 +3,9 @@ package speakerrecognition.impl.kmeans;
 import speakerrecognition.math.Matrices;
 
 class LabelsPrecomputeDence {
-    int[] labels;
-    double[] distances;
-    double inertia = 0;
+    private int[] labels;
+    private double[] distances;
+    private double inertia = 0;
 
     LabelsPrecomputeDence(double[][] X, double[] x_squared_norms, double[][] centers, double[] distances) {
         this.distances = distances;
@@ -28,5 +28,17 @@ class LabelsPrecomputeDence {
         if (n_samples == this.distances.length)
             this.distances = mindist;
         this.inertia = Matrices.sum(mindist);
+    }
+
+    public int[] getLabels() {
+        return labels;
+    }
+
+    public double[] getDistances() {
+        return distances;
+    }
+
+    public double getInertia() {
+        return inertia;
     }
 }

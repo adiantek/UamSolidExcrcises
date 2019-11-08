@@ -2,11 +2,11 @@ package speakerrecognition.impl.gmm;
 
 import speakerrecognition.math.Matrices;
 
-public class ScoreSamples {
-    private double[][] means = null;
-    private double[][] covars = null;
-    private double[] logprob = null;
-    private double[][] responsibilities = null;
+class ScoreSamples {
+    private double[][] means;
+    private double[][] covars;
+    private double[] logprob;
+    private double[][] responsibilities;
 
 
     ScoreSamples(double[][] X, double[][] means, double[][] covars, double[] weights, int numOfComponents) {
@@ -14,21 +14,21 @@ public class ScoreSamples {
         this.means = means;
         this.covars = covars;
 
-        double[][] lpr = log_multivariate_normal_density(X, this.means, this.covars);
+        double[][] lpr = logMultivariateNormalDensity(X, this.means, this.covars);
         lpr = Matrices.addValue(lpr, Matrices.makeLog(weights));
         this.logprob = Matrices.logsumexp(lpr);
         this.responsibilities = Matrices.exp(Matrices.substractValue(lpr, logprob));
     }
 
-    public double[] getLogprob() {
+    double[] getLogprob() {
         return this.logprob;
     }
 
-    public double[][] getResponsibilities() {
+    double[][] getResponsibilities() {
         return this.responsibilities;
     }
 
-    private double[][] log_multivariate_normal_density(double[][] data, double[][] means, double[][] covars) {
+    private double[][] logMultivariateNormalDensity(double[][] data, double[][] means, double[][] covars) {
         //diagonal type
         double[][] lpr = new double[data.length][means.length];
         int n_dim = data[0].length;
