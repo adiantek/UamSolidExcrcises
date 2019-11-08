@@ -29,14 +29,14 @@ public class SpeakerModel implements Serializable {
     double getScore(double[][] data) {
         double score = 0;
         double[] logprob = null;
-        double[][] lpr = log_multivariate_normal_density(data, this.means, this.covars);
+        double[][] lpr = logMultivariateNormalDensity(data, this.means, this.covars);
         lpr = Matrices.addValue(lpr, Matrices.makeLog(this.weights));
         logprob = Matrices.logsumexp(lpr);
         score = Statistics.getMean(logprob);
         return score;
     }
 
-    private double[][] log_multivariate_normal_density(double[][] data, double[][] means, double[][] covars) {
+    private double[][] logMultivariateNormalDensity(double[][] data, double[][] means, double[][] covars) {
         //diagonal type
         double[][] lpr = new double[data.length][means.length];
         int n_samples = data.length;

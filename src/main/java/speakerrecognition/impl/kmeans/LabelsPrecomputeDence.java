@@ -11,7 +11,7 @@ class LabelsPrecomputeDence {
         this.distances = distances;
         int n_samples = X.length;
         int k = centers.length;
-        double[][] all_distances = Matrices.euclidean_distances(centers, X, x_squared_norms);
+        double[][] all_distances = Matrices.euclideanDistances(centers, X, x_squared_norms);
         this.labels = new int[n_samples];
         this.labels = Matrices.addValue(this.labels, -1);
         double[] mindist = new double[n_samples];
@@ -30,15 +30,15 @@ class LabelsPrecomputeDence {
         this.inertia = Matrices.sum(mindist);
     }
 
-    public int[] getLabels() {
+    int[] getLabels() {
         return labels;
     }
 
-    public double[] getDistances() {
+    double[] getDistances() {
         return distances;
     }
 
-    public double getInertia() {
+    double getInertia() {
         return inertia;
     }
 }

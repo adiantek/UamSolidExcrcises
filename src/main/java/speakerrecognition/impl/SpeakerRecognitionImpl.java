@@ -40,8 +40,7 @@ public class SpeakerRecognitionImpl implements SpeakerRecognition {
 
     public double[][] computeMFCC(int[] soundSamples, int fs) {
         MFCC mfcc = new MFCC(soundSamples, fs);
-        double[][] speaker_mfcc = mfcc.getMFCC();
-        return speaker_mfcc;
+        return mfcc.getMFCC();
     }
 
     public String recognize(List<SpeakerModel> speakerModels, String resourceSoundSpeechFilePath) throws IOException {

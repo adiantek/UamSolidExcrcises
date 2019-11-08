@@ -23,7 +23,6 @@ public class KMeans {
         this.numOfCols = x[0].length;
         this.data = Matrices.copy2dArray(x);
         this.best_cluster_centers = new double[numOfClust][x[0].length];
-
     }
 
     public void fit() {
@@ -48,7 +47,6 @@ public class KMeans {
             }
         }
         this.best_cluster_centers = Matrices.addValue(this.best_cluster_centers, X_mean);
-
     }
 
     public double[][] getCenters() {
@@ -68,13 +66,11 @@ public class KMeans {
                     }
                 }
                 sum[k] /= samples_num;
-
             }
             for (int i = 0; i < n_clusters; i++)
                 result[i][j] = sum[i];
         }
         return result;
-
     }
 
     static double[][] initCentroids(double[][] data, int n_clusters, double[] x_sq_norms, int numOfRows, int numOfCols) {
@@ -84,7 +80,7 @@ public class KMeans {
         /*!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
         int center_id = (int) Math.floor(Math.random() * numOfRows);
         if (numOfCols >= 0) System.arraycopy(data[center_id], 0, centers[0], 0, numOfCols);
-        double[] closest_dist_sq = Matrices.euclidean_distances(centers[0], data, x_sq_norms);
+        double[] closest_dist_sq = Matrices.euclideanDistances(centers[0], data, x_sq_norms);
         double current_pot = Matrices.sum(closest_dist_sq);
 
         for (int c = 1; c < n_clusters; c++) {
@@ -100,16 +96,16 @@ public class KMeans {
             }
 
             int best_candidate = -1;
-            double best_pot = 99999999;
+            double best_pot = Double.POSITIVE_INFINITY;
             double[] best_dist_sq = null;
 
-            double[][] distance_to_candidates = Matrices.euclidean_distances(data_candidates, data, x_sq_norms);
+            double[][] distance_to_candidates = Matrices.euclideanDistances(data_candidates, data, x_sq_norms);
 
             for (int trial = 0; trial < n_local_trials; trial++) {
                 double[] new_dist_sq = Matrices.minimum(closest_dist_sq, Matrices.select_row(distance_to_candidates, trial));
                 double new_pot = Matrices.sum(new_dist_sq);
 
-                if (best_candidate == -1 | new_pot < best_pot) {
+                if (best_candidate == -1 || new_pot < best_pot) {
                     best_candidate = candidate_ids[trial];
                     best_pot = new_pot;
                     best_dist_sq = Arrays.copyOf(new_dist_sq, new_dist_sq.length);

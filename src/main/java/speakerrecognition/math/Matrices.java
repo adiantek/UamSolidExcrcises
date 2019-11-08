@@ -5,7 +5,7 @@ import java.util.Arrays;
 
 public final class Matrices {
 
-    public static double[] row_mul(double[] x, double y) {
+    static double[] row_mul(double[] x, double y) {
         double[] v = new double[x.length];
         for (int i = 0; i < x.length; i++) {
             v[i] = x[i] * y;
@@ -40,7 +40,7 @@ public final class Matrices {
         int m1ColLength = m1[0].length; // m1 columns length
         int m2RowLength = m2.length;    // m2 rows length
         if (m1ColLength != m2RowLength) {
-            throw new IllegalArgumentException("While multiplying Matrices, number of columns of first array [" + Integer.toString(m1ColLength) + "] must be the same as number of rows in second array [" + Integer.toString(m2RowLength) + "]. Obviously, it is not.");//return null; // matrix multiplication is not possible
+            throw new IllegalArgumentException("While multiplying Matrices, number of columns of first array [" + m1ColLength + "] must be the same as number of rows in second array [" + m2RowLength + "]. Obviously, it is not.");//return null; // matrix multiplication is not possible
         }
         int mRRowLength = m1.length;    // m result rows length
         int mRColLength = m2[0].length; // m result columns length
@@ -59,12 +59,11 @@ public final class Matrices {
         int m1ColLength = m1[0].length; // m1 columns length
         int m2RowLength = m2.length;    // m2 rows length
         if (m1ColLength != m2RowLength) //return null; // matrix multiplication is not possible
-            throw new IllegalArgumentException("While multiplying matrix by vector, number of columns of first array [" + Integer.toString(m1ColLength) + "] must be the same as number of rows (elements) in second vector [" + Integer.toString(m2RowLength) + "]. Obviously, it is not.");
+            throw new IllegalArgumentException("While multiplying matrix by vector, number of columns of first array [" + m1ColLength + "] must be the same as number of rows (elements) in second vector [" + m2RowLength + "]. Obviously, it is not.");
         int mRRowLength = m1.length;    // m result rows length
-        int mRColLength = m2RowLength; // m result columns length
         double[] mResult = new double[mRRowLength];
         for (int i = 0; i < mRRowLength; i++) {         // rows from m1
-            for (int j = 0; j < mRColLength; j++) {     // columns from m2
+            for (int j = 0; j < m2RowLength; j++) {     // columns from m2
                 mResult[i] += m1[i][j] * m2[j];
             }
         }
@@ -74,7 +73,7 @@ public final class Matrices {
     public static double[][] multiplyMatricesElByEl(double[][] m1, double[][] m2) {
 
         if (m1.length != m2.length || m1[0].length != m2[0].length) {
-            throw new IllegalArgumentException("While multiplying matrixex element by element, they must have equal dimmensions, while it is [" + Integer.toString(m1.length) + "][" + Integer.toString(m1[0].length) + "] and [" + Integer.toString(m2.length) + "][" + Integer.toString(m2[0].length) + "].");
+            throw new IllegalArgumentException("While multiplying matrixex element by element, they must have equal dimmensions, while it is [" + m1.length + "][" + m1[0].length + "] and [" + m2.length + "][" + m2[0].length + "].");
         }
 
         double[][] result = new double[m1.length][m1[0].length];
@@ -91,7 +90,7 @@ public final class Matrices {
         double[][] temp = new double[x.length][x[0].length];
 
         if (x.length != y.length && x[0].length != y.length)
-            throw new IllegalArgumentException("Cannot multiply matrix by vecror element by element, neither row-wise nor column-wise. Number of elements in vector [" + Integer.toString(y.length) + "] must be equal to any of dimmension parameters of first array [" + Integer.toString(x.length) + "][" + Integer.toString(x[0].length) + "].");
+            throw new IllegalArgumentException("Cannot multiply matrix by vecror element by element, neither row-wise nor column-wise. Number of elements in vector [" + y.length + "] must be equal to any of dimmension parameters of first array [" + x.length + "][" + x[0].length + "].");
 
         if (x.length == y.length) {
             for (int i = 0; i < x[0].length; i++) {
@@ -127,7 +126,7 @@ public final class Matrices {
         return v;
     }
 
-    public static double[][] meshgrid_ox(int n) {
+    static double[][] meshgrid_ox(int n) {
         double[][] x = new double[n][n];
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
@@ -137,7 +136,7 @@ public final class Matrices {
         return x;
     }
 
-    public static double[][] meshgrid_oy(int n) {
+    static double[][] meshgrid_oy(int n) {
         double[][] x = new double[n][n];
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
@@ -170,7 +169,7 @@ public final class Matrices {
     public static double[][] substractValue(double[][] x, double[] y) {
 
         if (x.length != y.length && x[0].length != y.length)
-            throw new IllegalArgumentException("Cannot substract vecror from array element by element, neither row-wise nor column-wise. Number of elements in vector [" + Integer.toString(y.length) + "] must be equal to any of dimmension parameters of first array [" + Integer.toString(x.length) + "][" + Integer.toString(x[0].length) + "].");
+            throw new IllegalArgumentException("Cannot substract vecror from array element by element, neither row-wise nor column-wise. Number of elements in vector [" + y.length + "] must be equal to any of dimmension parameters of first array [" + x.length + "][" + x[0].length + "].");
         double[][] temp = new double[x.length][x[0].length];
         // [n][m] + [n][1], m times
         // [n][m] + [1][m] n times
@@ -213,10 +212,10 @@ public final class Matrices {
         return temp;
     }
 
-    public static double[][] addValue(double[][] x, double y[]) {
+    public static double[][] addValue(double[][] x, double[] y) {
         double[][] temp = new double[x.length][x[0].length];
         if (x.length != y.length && x[0].length != y.length) {
-            throw new IllegalArgumentException("Cannot add vector to array element by element, neither row-wise nor column-wise. Number of elements in vector [" + Integer.toString(y.length) + "] must be equal to any of dimmension parameters of first array [" + Integer.toString(x.length) + "][" + Integer.toString(x[0].length) + "].");
+            throw new IllegalArgumentException("Cannot add vector to array element by element, neither row-wise nor column-wise. Number of elements in vector [" + y.length + "] must be equal to any of dimmension parameters of first array [" + x.length + "][" + x[0].length + "].");
         }
         if (x.length == y.length) {
             for (int i = 0; i < x.length; i++) {
@@ -230,7 +229,6 @@ public final class Matrices {
             }
         }
 
-
         return temp;
     }
 
@@ -238,7 +236,7 @@ public final class Matrices {
         double[] temp = new double[x.length];
 
         if (x.length != y.length)
-            throw new IllegalArgumentException("Cannot add vectors el by el. Vectors must have same length, while it is [" + Integer.toString(x.length) + "] and [" + Integer.toString(y.length) + "].");
+            throw new IllegalArgumentException("Cannot add vectors el by el. Vectors must have same length, while it is [" + x.length + "] and [" + y.length + "].");
 
         for (int i = 0; i < x.length; i++)
             temp[i] = x[i] + y[i];
@@ -250,7 +248,7 @@ public final class Matrices {
         if (x.length != y.length || x[0].length != y[0].length) {
             //System.out.println("Matrices must have equal dimensions");
             //return null;
-            throw new IllegalArgumentException("While adding Matrices element by element, they must have equal dimmensions, while it is [" + Integer.toString(x.length) + "][" + Integer.toString(x[0].length) + "] and [" + Integer.toString(y.length) + "][" + Integer.toString(y[0].length) + "].");
+            throw new IllegalArgumentException("While adding Matrices element by element, they must have equal dimmensions, while it is [" + x.length + "][" + x[0].length + "] and [" + y.length + "][" + y[0].length + "].");
         }
 
         double[][] temp = new double[x.length][x[0].length];
@@ -266,7 +264,7 @@ public final class Matrices {
         if (x.length != y.length || x[0].length != y[0].length) {
             //System.out.println("Matrices must have equal dimensions");
             //return null;
-            throw new IllegalArgumentException("While substracting Matrices element by element, they must have equal dimmensions, while it is [" + Integer.toString(x.length) + "][" + Integer.toString(x[0].length) + "] and [" + Integer.toString(y.length) + "][" + Integer.toString(y[0].length) + "].");
+            throw new IllegalArgumentException("While substracting Matrices element by element, they must have equal dimmensions, while it is [" + x.length + "][" + x[0].length + "] and [" + y.length + "][" + y[0].length + "].");
         }
 
         double[][] temp = new double[x.length][x[0].length];
@@ -286,7 +284,7 @@ public final class Matrices {
             throw new IllegalArgumentException(String.format("Wrong axis, should be 0 or 1, and is %d", axis));
         }
 
-        double[] result = null;
+        double[] result;
         if (axis == 1) {
             result = new double[x.length];
             for (int i = 0; i < x.length; i++) {
@@ -362,16 +360,15 @@ public final class Matrices {
         if (y > x.length - 1)
             throw new IllegalArgumentException(String.format("Selected row out of range - %d. of %d rows (remember aobout 0th row!).", y, x.length));
 
-        double result[] = new double[x[0].length];
-        for (int i = 0; i < x[0].length; i++)
-            result[i] = x[y][i];
+        double[] result = new double[x[0].length];
+        System.arraycopy(x[y], 0, result, 0, x[0].length);
         return result;
     }
 
-    public static double einsum(double[] x) {
+    private static double einsum(double[] x) {
         double temp = 0;
-        for (int i = 0; i < x.length; i++) {
-            temp = temp + Math.pow(x[i], 2);
+        for (double v : x) {
+            temp = temp + Math.pow(v, 2);
         }
 
         return temp;
@@ -389,7 +386,7 @@ public final class Matrices {
         return temp;
     }
 
-    public static double[] euclidean_distances(double[] x, double[][] y, double[] z) {
+    public static double[] euclideanDistances(double[] x, double[][] y, double[] z) {
         //double[] result = null;
 
         double[] distances = new double[y.length];//[this.numOfRows];
@@ -402,12 +399,9 @@ public final class Matrices {
         return distances;
     }
 
-    public static double[][] euclidean_distances(double[][] x, double[][] y, double[] z) {
-        //double [][] result = new double[x.length][y.length];
-        double[][] distances = null;
-        double[] XX = null;
-        XX = einsum(x);
-        distances = Matrices.multiplyByMatrix(x, Matrices.transpose(y));
+    public static double[][] euclideanDistances(double[][] x, double[][] y, double[] z) {
+        double[] XX = einsum(x);
+        double[][] distances = Matrices.multiplyByMatrix(x, Matrices.transpose(y));
         distances = Matrices.row_mul(distances, -2);
         distances = Matrices.addValue(distances, XX);
         distances = Matrices.addValue(distances, z);
@@ -415,25 +409,18 @@ public final class Matrices {
     }
 
     public static double[][] cov(double[][] x) {
-
-        double[][] temp = null;
-        double[] X_mean = null;
-
-        temp = Matrices.copy2dArray(x);
-        //////////substracting mean //////////////
-        X_mean = Statistics.getMean(Matrices.transpose(x));
+        double[][] temp = Matrices.copy2dArray(x);
+        double[] X_mean = Statistics.getMean(Matrices.transpose(x));
         for (int j = 0; j < x[0].length; j++) {
             for (int i = 0; i < x.length; i++) {
                 temp[i][j] -= X_mean[i];
             }
         }
-
         temp = Matrices.divideByValue(Matrices.multiplyByMatrix(x, Matrices.transpose(temp)), (double) x[0].length - 1);
-
         return temp;
     }
 
-    public static double[][] divideByValue(double[][] x, double y) {
+    private static double[][] divideByValue(double[][] x, double y) {
         if (y == 0)
             throw new IllegalArgumentException("Cannot divide by 0");
         double[][] temp = new double[x.length][x[0].length];
@@ -457,7 +444,7 @@ public final class Matrices {
         for (int i = 0; i < x.length; i++) {
 
             if (x[i] <= 0)
-                throw new IllegalArgumentException("Cannot make Log of value below 0 - Log(" + Double.toString(x[i]) + "), (index " + Integer.toString(i) + ").");
+                throw new IllegalArgumentException("Cannot make Log of value below 0 - Log(" + x[i] + "), (index " + i + ").");
             temp[i] = Math.log(x[i]);
 
         }
@@ -470,7 +457,7 @@ public final class Matrices {
             for (int j = 0; j < x[0].length; j++) {
 
                 if (x[i][j] <= 0)
-                    throw new IllegalArgumentException("Cannot make Log of value below 0 - Log(" + Double.toString(x[i][j]) + "), (index [" + Integer.toString(i) + "," + Integer.toString(j) + "]).");
+                    throw new IllegalArgumentException("Cannot make Log of value below 0 - Log(" + x[i][j] + "), (index [" + i + "," + j + "]).");
 
                 temp[i][j] = Math.log(x[i][j]);
             }
@@ -482,7 +469,7 @@ public final class Matrices {
         double[] temp = new double[x.length];
         for (int i = 0; i < x.length; i++) {
             if (x[i] == 0)
-                throw new IllegalArgumentException("While inverting values, cannot divide by 0, (index " + Integer.toString(i) + ").");
+                throw new IllegalArgumentException("While inverting values, cannot divide by 0, (index " + i + ").");
             temp[i] = 1 / (x[i]);
         }
         return temp;
@@ -495,7 +482,7 @@ public final class Matrices {
             for (int j = 0; j < x[0].length; j++) {
 
                 if (x[i][j] <= 0)
-                    throw new IllegalArgumentException("While inverting values, cannot divide by 0 (index [" + Integer.toString(i) + "," + Integer.toString(j) + "]).");
+                    throw new IllegalArgumentException("While inverting values, cannot divide by 0 (index [" + i + "," + j + "]).");
                 temp[i][j] = 1 / (x[i][j]);
             }
         }
@@ -506,7 +493,7 @@ public final class Matrices {
         //a[0][0]/b[0][0] ,  a[m][n]/b[m][n] ...
 
         if (x.length != y.length || x[0].length != y[0].length) {
-            throw new IllegalArgumentException("While dividing element by element, they must have equal dimmensions, now it is [" + Integer.toString(x.length) + "][" + Integer.toString(x[0].length) + "] and [" + Integer.toString(y.length) + "][" + Integer.toString(y[0].length) + "].");
+            throw new IllegalArgumentException("While dividing element by element, they must have equal dimmensions, now it is [" + x.length + "][" + x[0].length + "] and [" + y.length + "][" + y[0].length + "].");
         }
 
         double[][] result = new double[x.length][x[0].length];
@@ -514,7 +501,7 @@ public final class Matrices {
         for (int i = 0; i < y.length; i++) {
             for (int j = 0; j < x[0].length; j++) {
                 if (y[i][j] <= 0)
-                    throw new IllegalArgumentException("While inverting values, cannot divide by 0 (y[" + Integer.toString(i) + "][" + Integer.toString(j) + "]).");
+                    throw new IllegalArgumentException("While inverting values, cannot divide by 0 (y[" + i + "][" + j + "]).");
                 result[i][j] = x[i][j] / y[i][j];
             }
         }
@@ -533,7 +520,7 @@ public final class Matrices {
 
     public static double[] logsumexp(double[][] data) {
         double[][] temp = Matrices.transpose(data);
-        double[] vmax = Matrices.max(temp, 0);
+        double[] vmax = Matrices.max(temp);
         double[] out = Matrices.makeLog(Matrices.sum(Matrices.exp(Matrices.substractValue(temp, vmax)), 0));
         out = Matrices.addMatrices(out, vmax);
         return out;
@@ -548,39 +535,18 @@ public final class Matrices {
         return temp;
     }
 
-    public static double[] max(double[][] x, int axis) {
-        if (axis != 0 && axis != 1) {
-            throw new IllegalArgumentException(String.format("Wrong axis, sholud be 0 or 1, and is %d", axis));
+    private static double[] max(double[][] x) {
+        double[] vmax = new double[x[0].length];
+
+        for (int i = 0; i < x[0].length; i++) {
+            vmax[i] = Double.NEGATIVE_INFINITY;
         }
 
-        double[] vmax;
-        if (axis == 0) {
-            vmax = new double[x[0].length];
-
-            for (int i = 0; i < x[0].length; i++) {
-                vmax[i] = Double.NEGATIVE_INFINITY;
-            }  //JAK CO TO USUN¥Æ!!!
-
-            for (int i = 0; i < x[0].length; i++) {
-                for (int j = 0; j < x.length; j++)
-                    if (vmax[i] < x[j][i])
-                        vmax[i] = x[j][i];
-            }
-        } else {
-            vmax = new double[x.length];
-
-            for (int i = 0; i < x.length; i++) {
-                vmax[i] = Double.NEGATIVE_INFINITY;
-            }// JAK CO TO USUN¥Æ!!!
-
-
-            for (int i = 0; i < x.length; i++) {
-                for (int j = 0; j < x[0].length; j++)
-                    if (vmax[i] < x[i][j])
-                        vmax[i] = x[i][j];
-            }
+        for (int i = 0; i < x[0].length; i++) {
+            for (double[] doubles : x)
+                if (vmax[i] < doubles[i])
+                    vmax[i] = doubles[i];
         }
-
 
         return vmax;
     }
