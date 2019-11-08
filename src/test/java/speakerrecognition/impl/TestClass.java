@@ -16,7 +16,7 @@ public class TestClass {
     private SpeakerRecognition speakerRecognition = new SpeakerRecognitionImpl();
 
     @Test
-    public void testCase() throws IOException, ClassNotFoundException, MyException {
+    public void testCase() throws IOException {
 
         //given
 

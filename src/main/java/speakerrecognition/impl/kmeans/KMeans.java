@@ -40,8 +40,8 @@ public class KMeans {
         for (int i = 0; i < n_init; i++) {
             int max_iter = 300;
             KmeansSingle kmeans_single = new KmeansSingle(this.data, this.numOfClusters, x_squared_norms, max_iter, this.tol, numOfRows, numOfCols);
-            cluster_centers = kmeans_single.get_best_centers().clone();
-            inertia = kmeans_single.get_best_inertia();
+            cluster_centers = kmeans_single.getBestCenters().clone();
+            inertia = kmeans_single.getBestInertia();
             if (inertia < this.best_inertia) {
                 this.best_inertia = inertia;
                 this.best_cluster_centers = cluster_centers.clone();
@@ -81,53 +81,45 @@ public class KMeans {
     public static double[][] init_centroids(double[][] data, int n_clusters, double[] x_sq_norms, int numOfRows, int numOfCols) {
         double[][] centers = new double[n_clusters][numOfCols];
 
-        try {
-            int n_local_trials = 2 + (int) (Math.log(n_clusters));
+        int n_local_trials = 2 + (int) (Math.log(n_clusters));
+        /*!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
+        int center_id = (int) Math.floor(Math.random() * numOfRows);
+        if (numOfCols >= 0) System.arraycopy(data[center_id], 0, centers[0], 0, numOfCols);
+        double[] closest_dist_sq = Matrices.euclidean_distances(centers[0], data, x_sq_norms);
+        double current_pot = Matrices.sum(closest_dist_sq);
+
+        for (int c = 1; c < n_clusters; c++) {
             /*!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
-            int center_id = (int) Math.floor(Math.random() * numOfRows);
-            if (numOfCols >= 0) System.arraycopy(data[center_id], 0, centers[0], 0, numOfCols);
-            double[] closest_dist_sq = Matrices.euclidean_distances(centers[0], data, x_sq_norms);
-            double current_pot = Matrices.sum(closest_dist_sq);
+            double[] rand_vals = Matrices.genRandMatrix(current_pot, n_local_trials);
+            double[] closest_dist_sq_cumsum = Matrices.cumsum(closest_dist_sq);
+            int[] candidate_ids = Matrices.searchsorted(closest_dist_sq_cumsum, rand_vals);
+            double[][] data_candidates = new double[n_local_trials][numOfCols];
 
-            for (int c = 1; c < n_clusters; c++) {
-                /*!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
-                double[] rand_vals = Matrices.genRandMatrix(current_pot, n_local_trials);
-                double[] closest_dist_sq_cumsum = Matrices.cumsum(closest_dist_sq);
-                int[] candidate_ids = Matrices.searchsorted(closest_dist_sq_cumsum, rand_vals);
-                double[][] data_candidates = new double[n_local_trials][numOfCols];
-
-                for (int z = 0; z < n_local_trials; z++) {
-                    if (numOfCols >= 0)
-                        System.arraycopy(data[candidate_ids[z]], 0, data_candidates[z], 0, numOfCols);
-                }
-
-                int best_candidate = -1;
-                double best_pot = 99999999;
-                double[] best_dist_sq = null;
-
-                double[][] distance_to_candidates = Matrices.euclidean_distances(data_candidates, data, x_sq_norms);
-
-                for (int trial = 0; trial < n_local_trials; trial++) {
-                    double[] new_dist_sq = Matrices.minimum(closest_dist_sq, Matrices.select_row(distance_to_candidates, trial));
-                    double new_pot = Matrices.sum(new_dist_sq);
-
-                    if (best_candidate == -1 | new_pot < best_pot) {
-                        best_candidate = candidate_ids[trial];
-                        best_pot = new_pot;
-                        best_dist_sq = Arrays.copyOf(new_dist_sq, new_dist_sq.length);
-                    }
-                }
-                double[] center_temp = Arrays.copyOf(data[best_candidate], data[best_candidate].length);
-                System.arraycopy(center_temp, 0, centers[c], 0, centers[0].length);
-                current_pot = best_pot;
-                closest_dist_sq = Arrays.copyOf(best_dist_sq, best_dist_sq.length);
-                //System.out.println("temp");
-
+            for (int z = 0; z < n_local_trials; z++) {
+                if (numOfCols >= 0)
+                    System.arraycopy(data[candidate_ids[z]], 0, data_candidates[z], 0, numOfCols);
             }
-        } catch (Exception myEx) {
-            //System.out.println("An exception encourred: " + myEx.getMessage());
-            myEx.printStackTrace();
-            System.exit(1);
+
+            int best_candidate = -1;
+            double best_pot = 99999999;
+            double[] best_dist_sq = null;
+
+            double[][] distance_to_candidates = Matrices.euclidean_distances(data_candidates, data, x_sq_norms);
+
+            for (int trial = 0; trial < n_local_trials; trial++) {
+                double[] new_dist_sq = Matrices.minimum(closest_dist_sq, Matrices.select_row(distance_to_candidates, trial));
+                double new_pot = Matrices.sum(new_dist_sq);
+
+                if (best_candidate == -1 | new_pot < best_pot) {
+                    best_candidate = candidate_ids[trial];
+                    best_pot = new_pot;
+                    best_dist_sq = Arrays.copyOf(new_dist_sq, new_dist_sq.length);
+                }
+            }
+            double[] center_temp = Arrays.copyOf(data[best_candidate], data[best_candidate].length);
+            System.arraycopy(center_temp, 0, centers[c], 0, centers[0].length);
+            current_pot = best_pot;
+            closest_dist_sq = Arrays.copyOf(best_dist_sq, best_dist_sq.length);
         }
 
         return centers;

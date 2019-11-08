@@ -23,7 +23,7 @@ public class GMM {
     private double[] best_weights = null;
     private double[][] best_covars = null;
 
-    GMM(double[][] data, int compNum) {
+    public GMM(double[][] data, int compNum) {
         this.observations = data;
         this.numOfComponents = compNum;
         this.means = new double[compNum][data[0].length];
@@ -31,7 +31,7 @@ public class GMM {
         this.covars = new double[compNum][data[0].length];
     }
 
-    void fit() {
+    public void fit() {
         double change = 0;
 
         double[][] cv;
@@ -52,7 +52,7 @@ public class GMM {
             int n_iter = 10;
             for (int j = 0; j < n_iter; j++) {
                 double prev_log_likelihood = current_log_likelihood;
-                Score_samples score_samples = new Score_samples(this.observations, this.means, this.covars, this.weights, this.numOfComponents);
+                ScoreSamples score_samples = new ScoreSamples(this.observations, this.means, this.covars, this.weights, this.numOfComponents);
                 double[] log_likelihoods = score_samples.getLogprob();
                 double[][] responsibilities = score_samples.getResponsibilities();
                 current_log_likelihood = Statistics.getMean(log_likelihoods);

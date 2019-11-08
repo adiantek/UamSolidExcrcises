@@ -2,6 +2,7 @@ package speakerrecognition.impl;
 
 
 import org.jtransforms.fft.DoubleFFT_1D;
+import speakerrecognition.math.MFCCProcessingUtils;
 import speakerrecognition.math.Matrices;
 
 
@@ -9,33 +10,22 @@ public class MFCC {
 
     private int frame_len;
     private int frame_shift;
-    private static int mfcc_num = 13;
-    private static double pre_emph = 0.95;
-    private double[] window = null;
-    //private double[] CF = null;
-    private double[][] melfb_coeffs = null;
+    private double[] window;
+    private double[][] melfb_coeffs;
     private double[][] mfcc_coeffs = null;
-    private int[] samples = null;
-    private double[][] D1 = null;
+    private int[] samples;
+    private double[][] D1;
 
     public MFCC(int[] x, int y) {
         this.samples = x;
-        this.frame_len = 256;//setFrameLen(fs); !!!!!!!!!!!!! ZMIANA !!!!!!!!!!!!!!!!!!!!!!
-        // = 256;
+        this.frame_len = 256;
         int fft_size = this.frame_len;
         this.frame_shift = setFrameShift(y);
         window = hamming(frame_len);
-
-        //this.melfb_coeffs = melfb(melfilter_bands, 256, fs); //!!!!!!!!!!!!!!!! USUN�� !!!!!!!!!!!!!!!!!
         int melfilter_bands = 40;
         this.melfb_coeffs = melfb(melfilter_bands, fft_size, y);
-
-        this.D1 = dctmatrix(melfilter_bands);
-
-        if (this.melfb_coeffs == null) System.out.println("Cannot initialize melfilter bank");
+        this.D1 = MFCCProcessingUtils.dctmatrix(melfilter_bands);
     }
-
-/////////// setters for MFCC parameters ///////////////////////
 
     private int setFrameShift(int sample_rate) {
         return (int) (0.0125 * (double) (sample_rate));
@@ -49,15 +39,10 @@ public class MFCC {
         return window_temp;
     }
 
-////////////////////////////////////////////////////////////////
-
-    //////// getters for MFCC results/////////////////////////////
     double[][] getMFCC() {
         extract_MFCC();
         return this.mfcc_coeffs;
     }
-
-///////////////// computation of mel filterbank ////////////////
 
     private double[][] melfb(int p, int n, int fs) {
         // p - number of filterbanks
@@ -67,7 +52,7 @@ public class MFCC {
         double f0 = 700 / (double) fs;
         int fn2 = (int) Math.floor((double) n / 2);
         double lr = Math.log((double) 1 + 0.5 / f0) / (p + 1);
-        double[] CF = arange(1, p + 1);
+        double[] CF = MFCCProcessingUtils.arrange(1, p + 1);
 
         for (int i = 0; i < CF.length; i++) {
             CF[i] = fs * f0 * (Math.exp(CF[i] * lr) - 1);
@@ -84,7 +69,7 @@ public class MFCC {
         int b2 = (int) Math.ceil(bl[1]);
         int b3 = (int) Math.floor(bl[2]);
         int b4 = Math.min(fn2, (int) Math.ceil(bl[3])) - 1;
-        double[] pf = arange(b1, b4 + 1);
+        double[] pf = MFCCProcessingUtils.arrange(b1, b4 + 1);
 
         for (int i = 0; i < pf.length; i++) {
             pf[i] = Math.log(1 + pf[i] / f0 / (double) n) / lr;
@@ -110,49 +95,36 @@ public class MFCC {
             r = (int) fp[i];
             m[r][i + 1] += 2 * pm[i];
         }
-
-        /////////// normalization part //////////
-
-        //int xx = M.length;
-        double[] temp_row = null;
+        double[] temp_row;
         double row_energy = 0;
-        //System.out.println(Integer.toString(M.length));
         for (int i = 0; i < m.length; i++) {
             temp_row = m[i];
-            row_energy = energy(temp_row);
+            row_energy = MFCCProcessingUtils.energy(temp_row);
             if (row_energy < 0.0001)
                 temp_row[i] = i;
             else {
                 while (row_energy > 1.01) {
                     temp_row = Matrices.row_mul(temp_row, 0.99);
-                    row_energy = energy(temp_row);
+                    row_energy = MFCCProcessingUtils.energy(temp_row);
                 }
                 while (row_energy < 0.99) {
                     temp_row = Matrices.row_mul(temp_row, 1.01);
-                    row_energy = energy(temp_row);
+                    row_energy = MFCCProcessingUtils.energy(temp_row);
                 }
             }
             m[i] = temp_row;
-
         }
-
-
         return m;
     }
 
-//////////////////////////////////////////////////////////////////////////////////////////
-
     private void extract_MFCC() {
-        // https://gist.github.com/jongukim/4037243
-        //http://dp.nonoo.hu/projects/ham-dsp-tutorial/05-sine-fft/
-
         if (this.samples != null) {
             DoubleFFT_1D fftDo = new DoubleFFT_1D(this.frame_len);
             double[] fft1 = new double[this.frame_len * 2];
             double[] fft_final = new double[this.frame_len / 2 + 1];
             //int[] x = this.samples;
             int frames_num = (int) ((double) (this.samples.length - this.frame_len) / (double) (this.frame_shift)) + 1;
-            this.mfcc_coeffs = new double[frames_num][MFCC.mfcc_num];
+            this.mfcc_coeffs = new double[frames_num][MFCCProcessingUtils.MFCC_NUM];
             double[] frame = new double[this.frame_len];
 
             for (int i = 0; i < frames_num; i++) {
@@ -164,7 +136,7 @@ public class MFCC {
                 try {
                     frame = Matrices.row_mul(frame, window);
 
-                    frame = preemphasis(frame);
+                    frame = MFCCProcessingUtils.preemphasis(frame);
                     System.arraycopy(frame, 0, fft1, 0, this.frame_len);
                     fftDo.realForwardFull(fft1);
 					/*for(double d: fft1) {
@@ -196,73 +168,5 @@ public class MFCC {
         } else {
             System.out.println("Vector of input samples is null");
         }
-
-    }
-
-    ///////////// math functions ///////////////////////////////////////////////////////////////
-
-    private static double[] arange(int x1, int x2) {
-        double[] temp = null;
-        try {
-            temp = new double[x2 - x1];
-            for (int i = 0; i < temp.length; i++) {
-                temp[i] = x1 + i;
-            }
-
-        } catch (IndexOutOfBoundsException e) {
-            System.err.println("IndexOutOfBoundsException: " + e.getMessage());
-        }
-        return temp;
-    }
-
-    private static double energy(double[] x) {
-        double en = 0;
-        for (double v : x) en = en + Math.pow(v, 2);
-        return en;
-    }
-
-    private double[] preemphasis(double[] x) {
-        double[] y = new double[x.length];
-        y[0] = x[0];
-        for (int i = 1; i < x.length; i++) {
-            y[i] = x[i] - MFCC.pre_emph * x[i - 1];
-        }
-        return y;
-    }
-
-    private double[][] dctmatrix(int n) {
-        double[][] d1 = new double[n][n];
-        double[][] x = Matrices.meshgrid_ox(n);
-        double[][] y = Matrices.meshgrid_oy(n);
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                x[i][j] = (x[i][j] * 2 + 1) * Math.PI / (2 * n);
-            }
-        }
-
-        try {
-            d1 = Matrices.multiplyMatricesElByEl(x, y);
-        } catch (Exception myEx) {
-            //System.out.println("An exception encourred: " + myEx.getMessage());
-            myEx.printStackTrace();
-            System.exit(1);
-        }
-
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                d1[i][j] = Math.sqrt(2 / (double) n) * Math.cos(d1[i][j]);
-            }
-        }
-        for (int i = 0; i < n; i++) {
-            d1[0][i] /= Math.sqrt(2);
-        }
-
-        double[][] d = new double[MFCC.mfcc_num][n];
-        for (int i = 1; i < MFCC.mfcc_num + 1; i++) {
-            System.arraycopy(d1[i], 0, d[i - 1], 0, n);
-
-        }
-
-        return d;
     }
 }

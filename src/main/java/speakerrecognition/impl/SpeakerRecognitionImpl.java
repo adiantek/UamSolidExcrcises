@@ -10,13 +10,13 @@ import speakerrecognition.io.WavFile;
 
 public class SpeakerRecognitionImpl implements SpeakerRecognition {
 
-    public int[] openWavFile(String resourcePath) throws IOException, MyException {
+    public int[] openWavFile(String resourcePath) throws IOException {
         WavFile wavFile = new WavFile(resourcePath);
         wavFile.open();
         return wavFile.getSamples();
     }
 
-    public int getSamplingFrequency(String resourceSOundFilePath) throws IOException, MyException {
+    public int getSamplingFrequency(String resourceSOundFilePath) throws IOException {
         WavFile wavFile = new WavFile(resourceSOundFilePath);
         wavFile.open();
         return wavFile.getFs();
@@ -34,7 +34,7 @@ public class SpeakerRecognitionImpl implements SpeakerRecognition {
         return kMeans.get_centers();
     }
 
-    public double getLogProbabilityOfDataUnderModel(SpeakerModel model, double[][] dataToBeTested) throws MyException {
+    public double getLogProbabilityOfDataUnderModel(SpeakerModel model, double[][] dataToBeTested) {
         return model.getScore(dataToBeTested);
     }
 
@@ -44,7 +44,7 @@ public class SpeakerRecognitionImpl implements SpeakerRecognition {
         return speaker_mfcc;
     }
 
-    public String recognize(List<SpeakerModel> speakerModels, String resourceSoundSpeechFilePath) throws IOException, MyException {
+    public String recognize(List<SpeakerModel> speakerModels, String resourceSoundSpeechFilePath) throws IOException {
         double finalScore = Long.MIN_VALUE;
         String bestFittingModelName = "";
         for (SpeakerModel model : speakerModels) {
@@ -65,7 +65,7 @@ public class SpeakerRecognitionImpl implements SpeakerRecognition {
     }
 
     public void printLogProbsForRecognition(List<SpeakerModel> speakerModels, String resourceSoundSpeechFilePath)
-            throws IOException, MyException {
+            throws IOException {
         for (SpeakerModel model : speakerModels) {
             WavFile wavFile1 = new WavFile(resourceSoundSpeechFilePath);
             wavFile1.open();

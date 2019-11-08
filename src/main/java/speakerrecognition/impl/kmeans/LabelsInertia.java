@@ -2,20 +2,20 @@ package speakerrecognition.impl.kmeans;
 
 import speakerrecognition.math.Matrices;
 
-public class LabelsInertia {
-    private int[] labels = null;
-    private double[] distances = null;
-    private double inertia = 0;
+class LabelsInertia {
+    private int[] labels;
+    private double[] distances;
+    private double inertia;
 
-    public int[] getLabels() {
+    int[] getLabels() {
         return this.labels.clone();
     }
 
-    public double getInertia() {
+    double getInertia() {
         return this.inertia;
     }
 
-    public double[] getDistances() {
+    double[] getDistances() {
         return this.distances.clone();
     }
 

@@ -26,7 +26,7 @@ public class SpeakerModel implements Serializable {
         return this.name;
     }
 
-    public double getScore(double[][] data) throws MyException {
+    public double getScore(double[][] data) {
         double score = 0;
         double[] logprob = null;
         double[][] lpr = log_multivariate_normal_density(data, this.means, this.covars);
@@ -36,7 +36,7 @@ public class SpeakerModel implements Serializable {
         return score;
     }
 
-    private double[][] log_multivariate_normal_density(double[][] data, double[][] means, double[][] covars) throws MyException {
+    private double[][] log_multivariate_normal_density(double[][] data, double[][] means, double[][] covars) {
         //diagonal type
         double[][] lpr = new double[data.length][means.length];
         int n_samples = data.length;
